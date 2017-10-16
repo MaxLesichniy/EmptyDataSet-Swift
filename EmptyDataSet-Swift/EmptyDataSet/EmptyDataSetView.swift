@@ -67,7 +67,9 @@ public class EmptyDataSetView: UIView {
         button.backgroundColor = UIColor.clear
         button.contentHorizontalAlignment = .center
         button.contentVerticalAlignment = .center
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.accessibilityIdentifier = "empty set button"
+        button.isHidden = true
         
         self.contentView.addSubview(button)
         return button
@@ -162,6 +164,7 @@ public class EmptyDataSetView: UIView {
         button.setAttributedTitle(nil, for: .highlighted)
         button.setBackgroundImage(nil, for: .normal)
         button.setBackgroundImage(nil, for: .highlighted)
+        button.isHidden = true
         customView = nil
         
         removeAllConstraints()
@@ -217,6 +220,8 @@ public class EmptyDataSetView: UIView {
                 views[subviewStrings.last!] = titleLabel
                 
                 contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(padding@750)-[titleLabel(>=0)]-(padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraint(NSLayoutConstraint.init(item: titleLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+
             } else {
                 titleLabel.isHidden = true
             }
@@ -228,6 +233,7 @@ public class EmptyDataSetView: UIView {
                 views[subviewStrings.last!] = detailLabel
                 
                 contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(padding@750)-[detailLabel(>=0)]-(padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraint(NSLayoutConstraint.init(item: detailLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
             } else {
                 detailLabel.isHidden = true
             }
@@ -238,7 +244,9 @@ public class EmptyDataSetView: UIView {
                 subviewStrings.append("button")
                 views[subviewStrings.last!] = button
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(padding@750)-[button(>=0)]-(padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding@750)-[button(>=0)]-(>=padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraint(NSLayoutConstraint.init(item: button, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+
             } else {
                 button.isHidden = true
             }
