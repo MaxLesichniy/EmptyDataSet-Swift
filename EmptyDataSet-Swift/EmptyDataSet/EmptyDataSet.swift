@@ -137,7 +137,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                 }
             }
         }
-        
+
         return items
     }
     
@@ -250,7 +250,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
 
     public func reloadEmptyDataSet() {
         
-        if (shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay {
+        if ((shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay) && emptyDataSetSource != nil {
             // Notifies that the empty dataset view will appear
             willAppear()
             

@@ -219,7 +219,7 @@ public class EmptyDataSetView: UIView {
                 subviewStrings.append("titleLabel")
                 views[subviewStrings.last!] = titleLabel
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(padding@750)-[titleLabel(>=0)]-(padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[titleLabel]-(>=padding)-|", options: [], metrics: metrics, views: views))
                 contentView.addConstraint(NSLayoutConstraint.init(item: titleLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 
             } else {
@@ -232,7 +232,7 @@ public class EmptyDataSetView: UIView {
                 subviewStrings.append("detailLabel")
                 views[subviewStrings.last!] = detailLabel
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(padding@750)-[detailLabel(>=0)]-(padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[detailLabel]-(>=padding)-|", options: [], metrics: metrics, views: views))
                 contentView.addConstraint(NSLayoutConstraint.init(item: detailLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
             } else {
                 detailLabel.isHidden = true
@@ -244,7 +244,7 @@ public class EmptyDataSetView: UIView {
                 subviewStrings.append("button")
                 views[subviewStrings.last!] = button
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding@750)-[button(>=0)]-(>=padding@750)-|", options: [], metrics: metrics, views: views))
+                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[button(>=0)]-(>=padding)-|", options: [], metrics: metrics, views: views))
                 contentView.addConstraint(NSLayoutConstraint.init(item: button, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 
             } else {
