@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F252F8E1F1605EB00C5B740 /* EmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F252F891F1605EB00C5B740 /* EmptyDataSet.swift */; };
-		2F252F8F1F1605EB00C5B740 /* EmptyDataSetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F252F8A1F1605EB00C5B740 /* EmptyDataSetDelegate.swift */; };
-		2F252F901F1605EB00C5B740 /* EmptyDataSetSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F252F8B1F1605EB00C5B740 /* EmptyDataSetSource.swift */; };
-		2F252F911F1605EB00C5B740 /* EmptyDataSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F252F8C1F1605EB00C5B740 /* EmptyDataSetView.swift */; };
-		2F252F921F1605EB00C5B740 /* EmptyDataSetView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F252F8D1F1605EB00C5B740 /* EmptyDataSetView+Extension.swift */; };
+		2F07341C206F1DAB002F99A5 /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07341B206F1DAB002F99A5 /* CustomView.swift */; };
+		2F07341E206F1DC0002F99A5 /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F07341D206F1DC0002F99A5 /* CustomView.xib */; };
+		2F3ED93520414EAB00B39182 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3ED93420414EAB00B39182 /* Configuration.swift */; };
 		2F7823A01F0250520053B957 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78239F1F0250520053B957 /* AppDelegate.swift */; };
-		2F7823A21F0250520053B957 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823A11F0250520053B957 /* ViewController.swift */; };
+		2F7823A21F0250520053B957 /* ApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823A11F0250520053B957 /* ApplicationsViewController.swift */; };
 		2F7823A51F0250520053B957 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F7823A31F0250520053B957 /* Main.storyboard */; };
 		2F7823AA1F0250520053B957 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2F7823A81F0250520053B957 /* LaunchScreen.storyboard */; };
 		2F7823C61F04AD970053B957 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823C51F04AD970053B957 /* UIColor+Extension.swift */; };
@@ -24,17 +22,24 @@
 		2F7823D91F05EF1E0053B957 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F7823D71F05EF1E0053B957 /* Lato-Regular.ttf */; };
 		2F7823DB1F09E3F70053B957 /* NewUsageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823DA1F09E3F70053B957 /* NewUsageViewController.swift */; };
 		2F7823E11F0A3C5A0053B957 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823E01F0A3C5A0053B957 /* RootViewController.swift */; };
+		2FD3C7521FB4080200B6CFDA /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3C7511FB4080200B6CFDA /* TestViewController.swift */; };
+		2FFAC5F72027ED36008BD16D /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5F62027ED36008BD16D /* Application.swift */; };
+		2FFAC6002027EDC8008BD16D /* EmptyDataSetView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5FB2027EDC8008BD16D /* EmptyDataSetView+Extension.swift */; };
+		2FFAC6012027EDC8008BD16D /* EmptyDataSetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5FC2027EDC8008BD16D /* EmptyDataSetDelegate.swift */; };
+		2FFAC6022027EDC8008BD16D /* EmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5FD2027EDC8008BD16D /* EmptyDataSet.swift */; };
+		2FFAC6032027EDC8008BD16D /* EmptyDataSetSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5FE2027EDC8008BD16D /* EmptyDataSetSource.swift */; };
+		2FFAC6042027EDC8008BD16D /* EmptyDataSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFAC5FF2027EDC8008BD16D /* EmptyDataSetView.swift */; };
+		C4F9F164F5DF6992AE82228C /* Pods_EmptyDataSet_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1CE3D52D81B623A3D04CF61 /* Pods_EmptyDataSet_Swift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2F252F891F1605EB00C5B740 /* EmptyDataSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyDataSet.swift; path = EmptyDataSet/EmptyDataSet.swift; sourceTree = "<group>"; };
-		2F252F8A1F1605EB00C5B740 /* EmptyDataSetDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyDataSetDelegate.swift; path = EmptyDataSet/EmptyDataSetDelegate.swift; sourceTree = "<group>"; };
-		2F252F8B1F1605EB00C5B740 /* EmptyDataSetSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyDataSetSource.swift; path = EmptyDataSet/EmptyDataSetSource.swift; sourceTree = "<group>"; };
-		2F252F8C1F1605EB00C5B740 /* EmptyDataSetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyDataSetView.swift; path = EmptyDataSet/EmptyDataSetView.swift; sourceTree = "<group>"; };
-		2F252F8D1F1605EB00C5B740 /* EmptyDataSetView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "EmptyDataSetView+Extension.swift"; path = "EmptyDataSet/EmptyDataSetView+Extension.swift"; sourceTree = "<group>"; };
+		0DDD682163873DB5D6DC0885 /* Pods-EmptyDataSet-Swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmptyDataSet-Swift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EmptyDataSet-Swift/Pods-EmptyDataSet-Swift.debug.xcconfig"; sourceTree = "<group>"; };
+		2F07341B206F1DAB002F99A5 /* CustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
+		2F07341D206F1DC0002F99A5 /* CustomView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
+		2F3ED93420414EAB00B39182 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		2F78239C1F0250520053B957 /* EmptyDataSet-Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EmptyDataSet-Swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F78239F1F0250520053B957 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2F7823A11F0250520053B957 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2F7823A11F0250520053B957 /* ApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsViewController.swift; sourceTree = "<group>"; };
 		2F7823A41F0250520053B957 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2F7823A91F0250520053B957 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2F7823AB1F0250520053B957 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -46,6 +51,15 @@
 		2F7823D71F05EF1E0053B957 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
 		2F7823DA1F09E3F70053B957 /* NewUsageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUsageViewController.swift; sourceTree = "<group>"; };
 		2F7823E01F0A3C5A0053B957 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		2FD3C7511FB4080200B6CFDA /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		2FFAC5F62027ED36008BD16D /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
+		2FFAC5FB2027EDC8008BD16D /* EmptyDataSetView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EmptyDataSetView+Extension.swift"; sourceTree = "<group>"; };
+		2FFAC5FC2027EDC8008BD16D /* EmptyDataSetDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDataSetDelegate.swift; sourceTree = "<group>"; };
+		2FFAC5FD2027EDC8008BD16D /* EmptyDataSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDataSet.swift; sourceTree = "<group>"; };
+		2FFAC5FE2027EDC8008BD16D /* EmptyDataSetSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDataSetSource.swift; sourceTree = "<group>"; };
+		2FFAC5FF2027EDC8008BD16D /* EmptyDataSetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDataSetView.swift; sourceTree = "<group>"; };
+		465AEA74200A7388D8E7B232 /* Pods-EmptyDataSet-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmptyDataSet-Swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-EmptyDataSet-Swift/Pods-EmptyDataSet-Swift.release.xcconfig"; sourceTree = "<group>"; };
+		F1CE3D52D81B623A3D04CF61 /* Pods_EmptyDataSet_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmptyDataSet_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4F9F164F5DF6992AE82228C /* Pods_EmptyDataSet_Swift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +79,8 @@
 			children = (
 				2F78239E1F0250520053B957 /* EmptyDataSet-Swift */,
 				2F78239D1F0250520053B957 /* Products */,
+				F3F799E744D91109DB8FCAA2 /* Pods */,
+				54F1F69A4766929391644BE6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,13 +95,12 @@
 		2F78239E1F0250520053B957 /* EmptyDataSet-Swift */ = {
 			isa = PBXGroup;
 			children = (
-				2F7823B21F0251490053B957 /* EmptyDataSet */,
+				2FFAC5FA2027EDBA008BD16D /* EmptyDataSet */,
+				2F85D1F0206F1D06003A45F7 /* View */,
+				2FFAC5F52027ED21008BD16D /* Model */,
+				2FD3C74F1FB407D100B6CFDA /* ViewController */,
 				2F7823C51F04AD970053B957 /* UIColor+Extension.swift */,
 				2F78239F1F0250520053B957 /* AppDelegate.swift */,
-				2F7823E01F0A3C5A0053B957 /* RootViewController.swift */,
-				2F7823A11F0250520053B957 /* ViewController.swift */,
-				2F7823D11F04E0EF0053B957 /* OriginalUsageViewController.swift */,
-				2F7823DA1F09E3F70053B957 /* NewUsageViewController.swift */,
 				2F7823A31F0250520053B957 /* Main.storyboard */,
 				2F7823B11F0250DF0053B957 /* SupportFiles */,
 			);
@@ -101,18 +117,6 @@
 				2F7823AB1F0250520053B957 /* Info.plist */,
 			);
 			name = SupportFiles;
-			sourceTree = "<group>";
-		};
-		2F7823B21F0251490053B957 /* EmptyDataSet */ = {
-			isa = PBXGroup;
-			children = (
-				2F252F891F1605EB00C5B740 /* EmptyDataSet.swift */,
-				2F252F8A1F1605EB00C5B740 /* EmptyDataSetDelegate.swift */,
-				2F252F8B1F1605EB00C5B740 /* EmptyDataSetSource.swift */,
-				2F252F8C1F1605EB00C5B740 /* EmptyDataSetView.swift */,
-				2F252F8D1F1605EB00C5B740 /* EmptyDataSetView+Extension.swift */,
-			);
-			name = EmptyDataSet;
 			sourceTree = "<group>";
 		};
 		2F7823D31F05EF1E0053B957 /* Fonts */ = {
@@ -140,6 +144,65 @@
 			path = Lato;
 			sourceTree = "<group>";
 		};
+		2F85D1F0206F1D06003A45F7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				2F07341B206F1DAB002F99A5 /* CustomView.swift */,
+				2F07341D206F1DC0002F99A5 /* CustomView.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		2FD3C74F1FB407D100B6CFDA /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				2F7823E01F0A3C5A0053B957 /* RootViewController.swift */,
+				2F7823A11F0250520053B957 /* ApplicationsViewController.swift */,
+				2F7823D11F04E0EF0053B957 /* OriginalUsageViewController.swift */,
+				2F7823DA1F09E3F70053B957 /* NewUsageViewController.swift */,
+				2FD3C7511FB4080200B6CFDA /* TestViewController.swift */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		2FFAC5F52027ED21008BD16D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2FFAC5F62027ED36008BD16D /* Application.swift */,
+				2F3ED93420414EAB00B39182 /* Configuration.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		2FFAC5FA2027EDBA008BD16D /* EmptyDataSet */ = {
+			isa = PBXGroup;
+			children = (
+				2FFAC5FD2027EDC8008BD16D /* EmptyDataSet.swift */,
+				2FFAC5FC2027EDC8008BD16D /* EmptyDataSetDelegate.swift */,
+				2FFAC5FE2027EDC8008BD16D /* EmptyDataSetSource.swift */,
+				2FFAC5FF2027EDC8008BD16D /* EmptyDataSetView.swift */,
+				2FFAC5FB2027EDC8008BD16D /* EmptyDataSetView+Extension.swift */,
+			);
+			path = EmptyDataSet;
+			sourceTree = "<group>";
+		};
+		54F1F69A4766929391644BE6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F1CE3D52D81B623A3D04CF61 /* Pods_EmptyDataSet_Swift.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F3F799E744D91109DB8FCAA2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0DDD682163873DB5D6DC0885 /* Pods-EmptyDataSet-Swift.debug.xcconfig */,
+				465AEA74200A7388D8E7B232 /* Pods-EmptyDataSet-Swift.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -147,9 +210,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2F7823AE1F0250520053B957 /* Build configuration list for PBXNativeTarget "EmptyDataSet-Swift" */;
 			buildPhases = (
+				9E6921F3015A435C7F14A7DE /* [CP] Check Pods Manifest.lock */,
 				2F7823981F0250520053B957 /* Sources */,
 				2F7823991F0250520053B957 /* Frameworks */,
 				2F78239A1F0250520053B957 /* Resources */,
+				81BB9DBDAA57DCA7EFB97BB5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -167,13 +232,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Xiaoye;
 				TargetAttributes = {
 					2F78239B1F0250520053B957 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = B5ZRU68637;
-						LastSwiftMigration = 0900;
+						DevelopmentTeam = Z6EUN2AQ2C;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -205,6 +270,7 @@
 				2F7823D91F05EF1E0053B957 /* Lato-Regular.ttf in Resources */,
 				2F7823AA1F0250520053B957 /* LaunchScreen.storyboard in Resources */,
 				2F7823D01F04DEC50053B957 /* Assets.xcassets in Resources */,
+				2F07341E206F1DC0002F99A5 /* CustomView.xib in Resources */,
 				2F7823D81F05EF1E0053B957 /* IdealSans-Book-Pro.otf in Resources */,
 				2F7823A51F0250520053B957 /* Main.storyboard in Resources */,
 			);
@@ -212,22 +278,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		81BB9DBDAA57DCA7EFB97BB5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-EmptyDataSet-Swift/Pods-EmptyDataSet-Swift-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EmptyDataSet-Swift/Pods-EmptyDataSet-Swift-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9E6921F3015A435C7F14A7DE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EmptyDataSet-Swift-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2F7823981F0250520053B957 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2F7823E11F0A3C5A0053B957 /* RootViewController.swift in Sources */,
-				2F252F921F1605EB00C5B740 /* EmptyDataSetView+Extension.swift in Sources */,
-				2F7823A21F0250520053B957 /* ViewController.swift in Sources */,
+				2F7823A21F0250520053B957 /* ApplicationsViewController.swift in Sources */,
+				2F3ED93520414EAB00B39182 /* Configuration.swift in Sources */,
+				2FFAC6022027EDC8008BD16D /* EmptyDataSet.swift in Sources */,
 				2F7823A01F0250520053B957 /* AppDelegate.swift in Sources */,
 				2F7823D21F04E0EF0053B957 /* OriginalUsageViewController.swift in Sources */,
 				2F7823DB1F09E3F70053B957 /* NewUsageViewController.swift in Sources */,
-				2F252F8F1F1605EB00C5B740 /* EmptyDataSetDelegate.swift in Sources */,
-				2F252F901F1605EB00C5B740 /* EmptyDataSetSource.swift in Sources */,
-				2F252F911F1605EB00C5B740 /* EmptyDataSetView.swift in Sources */,
+				2F07341C206F1DAB002F99A5 /* CustomView.swift in Sources */,
+				2FFAC6012027EDC8008BD16D /* EmptyDataSetDelegate.swift in Sources */,
 				2F7823C61F04AD970053B957 /* UIColor+Extension.swift in Sources */,
-				2F252F8E1F1605EB00C5B740 /* EmptyDataSet.swift in Sources */,
+				2FFAC5F72027ED36008BD16D /* Application.swift in Sources */,
+				2FFAC6032027EDC8008BD16D /* EmptyDataSetSource.swift in Sources */,
+				2FFAC6042027EDC8008BD16D /* EmptyDataSetView.swift in Sources */,
+				2FD3C7521FB4080200B6CFDA /* TestViewController.swift in Sources */,
+				2FFAC6002027EDC8008BD16D /* EmptyDataSetView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +376,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -274,6 +384,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -300,7 +411,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -323,6 +434,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -330,6 +442,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -350,7 +463,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -360,29 +473,33 @@
 		};
 		2F7823AF1F0250520053B957 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0DDD682163873DB5D6DC0885 /* Pods-EmptyDataSet-Swift.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = B5ZRU68637;
+				DEVELOPMENT_TEAM = Z6EUN2AQ2C;
 				INFOPLIST_FILE = "EmptyDataSet-Swift/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "YZF.EmptyDataSet-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
 		2F7823B01F0250520053B957 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 465AEA74200A7388D8E7B232 /* Pods-EmptyDataSet-Swift.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = B5ZRU68637;
+				DEVELOPMENT_TEAM = Z6EUN2AQ2C;
 				INFOPLIST_FILE = "EmptyDataSet-Swift/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "YZF.EmptyDataSet-Swift";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
