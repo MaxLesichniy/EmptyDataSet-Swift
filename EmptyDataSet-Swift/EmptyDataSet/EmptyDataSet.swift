@@ -82,7 +82,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         configureEmptyDataSetView = closure
     }
     
-    private var emptyDataSetView: EmptyDataSetView? {
+    public private(set) var emptyDataSetView: EmptyDataSetView? {
         get {
             if let view = objc_getAssociatedObject(self, &kEmptyDataSetView) as? EmptyDataSetView {
                 return view

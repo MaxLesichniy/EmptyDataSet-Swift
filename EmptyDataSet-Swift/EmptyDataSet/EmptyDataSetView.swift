@@ -151,6 +151,11 @@ public class EmptyDataSetView: UIView {
         }
     }
     
+    public func setDetailLabel(_ label: UILabel) {
+        self.detailLabel = label
+        self.contentView.addSubview(label)
+    }
+    
     // MARK: - Action Methods
     
     internal func removeAllConstraints() {
