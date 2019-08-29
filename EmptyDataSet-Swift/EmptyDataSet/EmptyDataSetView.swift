@@ -9,29 +9,34 @@
 import Foundation
 import UIKit
 
-public class EmptyDataSetView: UIView {
+open class EmptyDataSetView: UIView {
     
-    internal lazy var contentView: UIView = {
-        let contentView = UIView()
+    public weak var dataSource: EmptyDataSetSource?
+    public weak var delegate: EmptyDataSetDelegate?
+    public var configure: ((EmptyDataSetView) -> Void)?
+    
+    internal lazy var contentView: UIStackView = {
+        let contentView = UIStackView()
+        contentView.axis = .vertical
+        contentView.alignment = .center
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.backgroundColor = UIColor.clear
+        contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = true
         contentView.alpha = 0
         return contentView
     }()
     
-    internal lazy var imageView: UIImageView = {
+    public internal(set) lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = UIColor.clear
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = false
         imageView.accessibilityIdentifier = "empty set background image"
-        self.contentView.addSubview(imageView)
         return imageView
     }()
     
-    internal lazy var titleLabel: UILabel = {
+    public internal(set) lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor = UIColor.clear
@@ -42,11 +47,10 @@ public class EmptyDataSetView: UIView {
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.numberOfLines = 0
         titleLabel.accessibilityIdentifier = "empty set title"
-        self.contentView.addSubview(titleLabel)
         return titleLabel
     }()
     
-    internal lazy var detailLabel: UILabel = {
+    public internal(set) lazy var detailLabel: UILabel = {
         let detailLabel = UILabel()
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         detailLabel.backgroundColor = UIColor.clear
@@ -57,12 +61,11 @@ public class EmptyDataSetView: UIView {
         detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.numberOfLines = 0
         detailLabel.accessibilityIdentifier = "empty set detail label"
-        self.contentView.addSubview(detailLabel)
         return detailLabel
     }()
     
-    internal lazy var button: UIButton = {
-        let button = UIButton.init(type: .custom)
+    public internal(set) lazy var button: UIButton = { [unowned self] in
+        let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.clear
         button.contentHorizontalAlignment = .center
@@ -70,30 +73,29 @@ public class EmptyDataSetView: UIView {
         button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.accessibilityIdentifier = "empty set button"
         button.isHidden = true
-        
-        self.contentView.addSubview(button)
+        button.addTarget(self, action: #selector(didTapDataButtonHandler(_:)), for: .touchUpInside)
         return button
     }()
     
-    private var canShowImage: Bool {
+    internal var canShowImage: Bool {
         return imageView.image != nil
     }
     
-    private var canShowTitle: Bool {
+    internal var canShowTitle: Bool {
         if let attributedText = titleLabel.attributedText {
             return attributedText.length > 0
         }
         return false
     }
     
-    private var canShowDetail: Bool {
+    internal var canShowDetail: Bool {
         if let attributedText = detailLabel.attributedText {
             return attributedText.length > 0
         }
         return false
     }
     
-    private var canShowButton: Bool {
+    internal var canShowButton: Bool {
         if let attributedTitle = button.attributedTitle(for: .normal) {
             return attributedTitle.length > 0
         } else if let _ = button.image(for: .normal) {
@@ -102,7 +104,6 @@ public class EmptyDataSetView: UIView {
         
         return false
     }
-    
     
     internal var customView: UIView? {
         willSet {
@@ -120,7 +121,6 @@ public class EmptyDataSetView: UIView {
     
     internal var fadeInOnDisplay = false
     internal var verticalOffset: CGFloat = 0
-    internal var verticalSpace: CGFloat = 11
     
     internal var didTapContentViewHandle: (() -> Void)?
     internal var didTapDataButtonHandle: (() -> Void)?
@@ -128,17 +128,31 @@ public class EmptyDataSetView: UIView {
     internal var didAppearHandle: (() -> Void)?
     internal var willDisappearHandle: (() -> Void)?
     internal var didDisappearHandle: (() -> Void)?
-
-    override init(frame: CGRect) {
+    
+    private var _constraints: [NSLayoutConstraint] = []
+    
+    public override init(frame: CGRect) {
         super.init(frame: frame)
+        commonInit()
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    private func commonInit() {
         addSubview(contentView)
+        contentView.addArrangedSubview(imageView)
+        contentView.addArrangedSubview(titleLabel)
+        contentView.addArrangedSubview(detailLabel)
+        contentView.addArrangedSubview(button)
+
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
+        addGestureRecognizer(tapGestureRecognizer)
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override public func didMoveToSuperview() {
+    override open func didMoveToSuperview() {
         if let superviewBounds = superview?.bounds {
             frame = CGRect(x: 0, y: 0, width: superviewBounds.width, height: superviewBounds.height)
         }
@@ -158,14 +172,11 @@ public class EmptyDataSetView: UIView {
     
     // MARK: - Action Methods
     
-    internal func removeAllConstraints() {
-        removeConstraints(constraints)
-        contentView.removeConstraints(contentView.constraints)
-    }
-    
     internal func prepareForReuse() {
         titleLabel.text = nil
+        titleLabel.attributedText = nil
         detailLabel.text = nil
+        detailLabel.attributedText = nil
         imageView.image = nil
         button.setImage(nil, for: .normal)
         button.setImage(nil, for: .highlighted)
@@ -174,27 +185,16 @@ public class EmptyDataSetView: UIView {
         button.setBackgroundImage(nil, for: .normal)
         button.setBackgroundImage(nil, for: .highlighted)
         button.isHidden = true
+        detailLabel.isHidden = true
         customView = nil
         
-        removeAllConstraints()
     }
     
-    
-    // MARK: - Auto-Layout Configuration
-    internal func setupConstraints() {
+    open override func updateConstraints() {
+        super.updateConstraints()
         
-        // First, configure the content view constaints
-        // The content view must alway be centered to its superview
-        let centerXConstraint = NSLayoutConstraint(item: contentView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-        let centerYConstraint = NSLayoutConstraint(item: contentView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
-        
-        self.addConstraints([centerXConstraint, centerYConstraint])
-        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": contentView]))
-
-        // When a custom offset is available, we adjust the vertical constraints' constants
-        if (verticalOffset != 0 && constraints.count > 0) {
-            centerYConstraint.constant = verticalOffset
-        }
+        self.removeConstraints(_constraints)
+        _constraints.removeAll()
         
         if let customView = customView {
             let centerXConstraint = NSLayoutConstraint(item: customView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
@@ -202,15 +202,18 @@ public class EmptyDataSetView: UIView {
             
             let customViewHeight = customView.frame.height
             let customViewWidth = customView.frame.width
-            var heightConstarint: NSLayoutConstraint!
-            var widthConstarint: NSLayoutConstraint!
             
-            if(customViewHeight == 0) {
+            let heightConstarint: NSLayoutConstraint
+            
+            if (customViewHeight == 0) {
                 heightConstarint = NSLayoutConstraint(item: customView, attribute: .height, relatedBy: .lessThanOrEqual, toItem: self, attribute: .height, multiplier: 1, constant: 0.0)
             } else {
                 heightConstarint = NSLayoutConstraint(item: customView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: customViewHeight)
             }
-            if(customViewWidth == 0) {
+            
+            let widthConstarint: NSLayoutConstraint
+
+            if (customViewWidth == 0) {
                 widthConstarint = NSLayoutConstraint(item: customView, attribute: .width, relatedBy: .lessThanOrEqual, toItem: self, attribute: .width, multiplier: 1, constant: 0.0)
             } else {
                 widthConstarint = NSLayoutConstraint(item: customView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: customViewWidth)
@@ -220,89 +223,179 @@ public class EmptyDataSetView: UIView {
             if (verticalOffset != 0) {
                 centerYConstraint.constant = verticalOffset
             }
-            self.addConstraints([centerXConstraint, centerYConstraint])
-            self.addConstraints([heightConstarint, widthConstarint])
-//            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[customView]|", options: [], metrics: nil, views: ["customView": customView]))
-//            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[customView]|", options: [], metrics: nil, views: ["customView": customView]))
+            
+            _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
+            _constraints.append(contentsOf: [heightConstarint, widthConstarint])
+            
         } else {
+            // First, configure the content view constaints
+            // The content view must alway be centered to its superview
+            let centerXConstraint = NSLayoutConstraint(item: contentView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+            let centerYConstraint = NSLayoutConstraint(item: contentView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
             
-            let width = frame.width > 0 ? frame.width : UIScreen.main.bounds.width
-            let padding = roundf(Float(width/16.0))
-            let verticalSpace = self.verticalSpace  // Default is 11 pts
+            _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
+            _constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": contentView]))
             
-            var subviewStrings: [String] = []
-            var views: [String: UIView] = [:]
-            let metrics = ["padding": padding]
-            
-            // Assign the image view's horizontal constraints
-            if canShowImage {
-                imageView.isHidden = false
-                
-                subviewStrings.append("imageView")
-                views[subviewStrings.last!] = imageView
-                
-                contentView.addConstraint(NSLayoutConstraint.init(item: imageView, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-            } else {
-                imageView.isHidden = true
+            // When a custom offset is available, we adjust the vertical constraints' constants
+            if (verticalOffset != 0 && _constraints.count > 0) {
+                centerYConstraint.constant = verticalOffset
             }
+        }
+        
+        self.addConstraints(_constraints)
+    }
+    
+    //MARK: - Delegate Getters & Events (Private)
+    
+    private var shouldFadeIn: Bool {
+        return delegate?.emptyDataSetShouldFadeIn(self) ?? true
+    }
+    
+    private var shouldDisplay: Bool {
+        return delegate?.emptyDataSetShouldDisplay(self) ?? true
+    }
+    
+    private var shouldBeForcedToDisplay: Bool {
+        return delegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false
+    }
+    
+    private var isTouchAllowed: Bool {
+        return delegate?.emptyDataSetShouldAllowTouch(self) ?? true
+    }
+    
+    private var isScrollAllowed: Bool {
+        return delegate?.emptyDataSetShouldAllowScroll(self) ?? false
+    }
+    
+    private var isImageViewAnimateAllowed: Bool {
+        return delegate?.emptyDataSetShouldAnimateImageView(self) ?? false
+    }
+    
+    private func willAppear() {
+        delegate?.emptyDataSetWillAppear(self)
+        willAppearHandle?()
+    }
+    
+    private func didAppear() {
+        delegate?.emptyDataSetDidAppear(self)
+        didAppearHandle?()
+    }
+    
+    private func willDisappear() {
+        delegate?.emptyDataSetWillDisappear(self)
+        willDisappearHandle?()
+    }
+    
+    private func didDisappear() {
+        delegate?.emptyDataSetDidDisappear(self)
+        didDisappearHandle?()
+    }
+    
+    @objc private func didTapDataButtonHandler(_ sender: UIButton) {
+        delegate?.emptyDataSet(self, didTapButton: sender)
+        didTapDataButtonHandle?()
+    }
+    
+    
+    @objc private func didTapContentViewHandler(_ sender: UITapGestureRecognizer) {
+        guard let view = sender.view else { return }
+        delegate?.emptyDataSet(self, didTapView: view)
+        didTapContentViewHandle?()
+    }
+    
+    //MARK: - Reload APIs (Public)
+    public func reloadEmptyDataSet(itemsCount: Int = 0) {
+        guard dataSource != nil else { return }
+        
+        if ((shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay) && dataSource != nil {
+            // Notifies that the empty dataset view will appear
+            willAppear()
             
-            // Assign the title label's horizontal constraints
-            if (canShowTitle) {
-                titleLabel.isHidden = false
-                subviewStrings.append("titleLabel")
-                views[subviewStrings.last!] = titleLabel
-                
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[titleLabel]-(>=padding)-|", options: [], metrics: metrics, views: views))
-                contentView.addConstraint(NSLayoutConstraint.init(item: titleLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-
+            // Configure empty dataset fade in display
+            fadeInOnDisplay = shouldFadeIn
+            
+            // Removing view resetting the view and its constraints it very important to guarantee a good state
+            // If a non-nil custom view is available, let's configure it instead
+            prepareForReuse()
+            
+            if let customView = dataSource?.customView(self) {
+                self.contentView.isHidden = true
+                self.customView = customView
             } else {
-                titleLabel.isHidden = true
-            }
-            
-            // Assign the detail label's horizontal constraints
-            if (canShowDetail) {
-                detailLabel.isHidden = false
-                subviewStrings.append("detailLabel")
-                views[subviewStrings.last!] = detailLabel
+                self.contentView.isHidden = false
+                // Get the data from the data source
+                let renderingMode: UIImage.RenderingMode = dataSource?.imageTintColor(self) != nil ? .alwaysTemplate : .alwaysOriginal
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[detailLabel]-(>=padding)-|", options: [], metrics: metrics, views: views))
-                contentView.addConstraint(NSLayoutConstraint.init(item: detailLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-            } else {
-                detailLabel.isHidden = true
-            }
-            
-            // Assign the button's horizontal constraints
-            if (canShowButton) {
-                button.isHidden = false
-                subviewStrings.append("button")
-                views[subviewStrings.last!] = button
+                contentView.spacing = dataSource?.verticalSpacing(self) ?? 11
                 
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=padding)-[button(>=0)]-(>=padding)-|", options: [], metrics: metrics, views: views))
-                contentView.addConstraint(NSLayoutConstraint.init(item: button, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-
-            } else {
-                button.isHidden = true
-            }
-            
-            var verticalFormat = String()
-            
-            // Build a dynamic string format for the vertical constraints, adding a margin between each element. Default is 11 pts.
-            for i in 0 ..< subviewStrings.count {
-                let string = subviewStrings[i]
-                verticalFormat += "[\(string)]"
-                
-                if i < subviewStrings.count - 1 {
-                    verticalFormat += "-(\(verticalSpace))-"
+                // Configure Image
+                if let image = dataSource?.image(self) {
+                    imageView.image = image.withRenderingMode(renderingMode)
+                    if let imageTintColor = dataSource?.imageTintColor(self) {
+                        imageView.tintColor = imageTintColor
+                    }
+                }
+                // Configure title label
+                titleLabelString(dataSource?.title(self))
+                // Configure detail label
+                detailLabelString(dataSource?.description(self))
+                // Configure button
+                if let buttonImage = dataSource?.buttonImage(self, for: .normal) {
+                    button.setImage(buttonImage, for: .normal)
+                    button.setImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
+                } else if let buttonTitle = dataSource?.buttonTitle(self, for: .normal) {
+                    button.setAttributedTitle(buttonTitle, for: .normal)
+                    button.setAttributedTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
+                    button.setBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
+                    button.setBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
                 }
             }
             
-            // Assign the vertical constraints to the content view
-            if !verticalFormat.isEmpty {
-                contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|\(verticalFormat)|", options: [], metrics: metrics, views: views))
+            // Configure offset
+            verticalOffset = dataSource?.verticalOffset(self) ?? 0
+            
+            // Configure the empty dataset view
+            backgroundColor = dataSource?.backgroundColor(self)
+            isHidden = false
+            clipsToBounds = true
+            
+            // Configure empty dataset userInteraction permission
+            isUserInteractionEnabled = isTouchAllowed
+            
+            // Configure scroll permission
+            if let scrollView = superview as? UIScrollView {
+                scrollView.isScrollEnabled = isScrollAllowed
             }
-
+            
+            // Configure image view animation
+            if self.isImageViewAnimateAllowed {
+                if let animation = dataSource?.imageAnimation(self) {
+                    imageView.layer.add(animation, forKey: nil)
+                }
+            } else {
+                imageView.layer.removeAllAnimations()
+            }
+            
+            configure?(self)
+            
+            setNeedsUpdateConstraints()
+            layoutIfNeeded()
+            
+            // Notifies that the empty dataset view did appear
+            didAppear()
+        } else if !isHidden {
+            invalidate()
         }
-        
+    }
+    
+    internal func invalidate() {
+        willDisappear()
+        prepareForReuse()
+        isHidden = true
+        if let scrollView = superview as? UIScrollView {
+            scrollView.isScrollEnabled = true
+        }
+        didDisappear()
     }
     
 }

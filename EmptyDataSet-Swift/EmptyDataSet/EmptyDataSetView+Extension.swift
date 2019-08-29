@@ -18,6 +18,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func titleLabelString(_ attributedString: NSAttributedString?) -> Self {
         titleLabel.attributedText = attributedString
+        titleLabel.isHidden = !canShowTitle
         return self
     }
     
@@ -26,6 +27,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func detailLabelString(_ attributedString: NSAttributedString?) -> Self {
         detailLabel.attributedText = attributedString
+        detailLabel.isHidden = !canShowDetail
         return self
     }
     
@@ -33,6 +35,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func image(_ image: UIImage?) -> Self {
         imageView.image = image
+        imageView.isHidden = !canShowImage
         return self
     }
     
@@ -57,6 +60,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func buttonTitle(_ buttonTitle: NSAttributedString?, for state: UIControl.State) -> Self {
         button.setAttributedTitle(buttonTitle, for: state)
+        button.isHidden = !canShowButton
         return self
     }
     
@@ -65,6 +69,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func buttonImage(_ buttonImage: UIImage?, for state: UIControl.State) -> Self {
         button.setImage(buttonImage, for: state)
+        button.isHidden = !canShowButton
         return self
     }
     
@@ -101,8 +106,8 @@ extension EmptyDataSetView {
     
     /// Asks the data source for a vertical space between elements. Default is 11 pts.
     @discardableResult
-    public func verticalSpace(_ space: CGFloat) -> Self {
-        verticalSpace = space
+    public func verticalSpacing(_ spacing: CGFloat) -> Self {
+        contentView.spacing = spacing
         return self
     }
     
@@ -126,6 +131,8 @@ extension EmptyDataSetView {
     public func shouldDisplay(_ bool: Bool) -> Self {
         if let superview = self.superview as? UIScrollView {
             isHidden = !(bool && superview.itemsCount == 0)
+        } else {
+            isHidden = !bool
         }
         return self
     }
