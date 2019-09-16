@@ -32,7 +32,7 @@ public protocol EmptyDataSetDelegate: class {
     ///
     /// - Parameter scrollView: A scrollView subclass object informing the delegate.
     /// - Returns: true if the empty dataset should show.
-    func emptyDataSetShouldDisplay(_ emptyDataSetView: UIScrollView) -> Bool
+    func emptyDataSetShouldDisplay(_ emptyDataSetView: EmptyDataSetView) -> Bool
 
     /// Asks the delegate for touch permission. Default is true.
     ///

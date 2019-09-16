@@ -30,12 +30,10 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             return emptyDataSetView?.dataSource
         }
         set {
-            if emptyDataSetView == nil {
-                prepareEmptyDataSetView()
-            }
-            
             if newValue == nil {
-                self.invalidate()
+                invalidate()
+            } else if emptyDataSetView == nil {
+                prepareEmptyDataSetView()
             }
 
             emptyDataSetView?.dataSource = newValue
@@ -48,7 +46,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         }
         set {
             if newValue == nil {
-                self.invalidate()
+                invalidate()
+            } else if emptyDataSetView == nil {
+                prepareEmptyDataSetView()
             }
             
             emptyDataSetView?.delegate = newValue

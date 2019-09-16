@@ -101,6 +101,7 @@ extension EmptyDataSetView {
     @discardableResult
     public func verticalOffset(_ offset: CGFloat) -> Self {
         verticalOffset = offset
+        setNeedsUpdateConstraints()
         return self
     }
     
