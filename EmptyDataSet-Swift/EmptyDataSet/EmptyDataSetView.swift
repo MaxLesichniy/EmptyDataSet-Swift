@@ -23,6 +23,8 @@ open class EmptyDataSetView: UIView {
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = true
         contentView.alpha = 0
+        contentView.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        contentView.isLayoutMarginsRelativeArrangement = true
         return contentView
     }()
     
@@ -173,21 +175,20 @@ open class EmptyDataSetView: UIView {
     // MARK: - Action Methods
     
     internal func prepareForReuse() {
-        titleLabel.text = nil
-        titleLabel.attributedText = nil
-        detailLabel.text = nil
-        detailLabel.attributedText = nil
-        imageView.image = nil
-        button.setImage(nil, for: .normal)
-        button.setImage(nil, for: .highlighted)
-        button.setAttributedTitle(nil, for: .normal)
-        button.setAttributedTitle(nil, for: .highlighted)
-        button.setBackgroundImage(nil, for: .normal)
-        button.setBackgroundImage(nil, for: .highlighted)
-        button.isHidden = true
-        detailLabel.isHidden = true
-        customView = nil
+        titleLabelString(nil)
+        detailLabelString(nil)
+        image(nil)
         
+        let buttonStates: [UIControl.State] = [.highlighted, .normal]
+        buttonStates.forEach {
+            buttonTitle(nil, for: $0)
+            buttonImage(nil, for: $0)
+            buttonBackgroundImage(nil, for: $0)
+        }
+
+        button.isHidden = true
+        
+        customView = nil
     }
     
     open override func updateConstraints() {
@@ -230,8 +231,16 @@ open class EmptyDataSetView: UIView {
         } else {
             // First, configure the content view constaints
             // The content view must alway be centered to its superview
-            let centerXConstraint = NSLayoutConstraint(item: contentView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-            let centerYConstraint = NSLayoutConstraint(item: contentView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+            let item: Any
+            
+            if #available(iOS 11, *) {
+                item = self.safeAreaLayoutGuide
+            } else {
+                item = self
+            }
+            
+            let centerXConstraint = NSLayoutConstraint(item: contentView, attribute: .centerX, relatedBy: .equal, toItem: item, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+            let centerYConstraint = NSLayoutConstraint(item: contentView, attribute: .centerY, relatedBy: .equal, toItem: item, attribute: .centerY, multiplier: 1.0, constant: 0.0)
             
             _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
             _constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": contentView]))
@@ -340,14 +349,14 @@ open class EmptyDataSetView: UIView {
                 // Configure detail label
                 detailLabelString(dataSource?.description(self))
                 // Configure button
-                if let buttonImage = dataSource?.buttonImage(self, for: .normal) {
-                    button.setImage(buttonImage, for: .normal)
-                    button.setImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
-                } else if let buttonTitle = dataSource?.buttonTitle(self, for: .normal) {
-                    button.setAttributedTitle(buttonTitle, for: .normal)
-                    button.setAttributedTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
-                    button.setBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
-                    button.setBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
+                if let image = dataSource?.buttonImage(self, for: .normal) {
+                    buttonImage(image, for: .normal)
+                    buttonImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
+                } else if let title = dataSource?.buttonTitle(self, for: .normal) {
+                    buttonTitle(title, for: .normal)
+                    buttonTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
+                    buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
+                    buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
                 }
             }
             
@@ -379,7 +388,7 @@ open class EmptyDataSetView: UIView {
             configure?(self)
             
             setNeedsUpdateConstraints()
-            layoutIfNeeded()
+//            layoutIfNeeded()
             
             // Notifies that the empty dataset view did appear
             didAppear()
