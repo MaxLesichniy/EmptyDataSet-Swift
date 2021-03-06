@@ -155,6 +155,8 @@ open class EmptyDataSetView: UIView {
     }
     
     override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        
         if let superviewBounds = superview?.bounds {
             frame = CGRect(x: 0, y: 0, width: superviewBounds.width, height: superviewBounds.height)
         }
@@ -332,18 +334,13 @@ open class EmptyDataSetView: UIView {
                 self.customView = customView
             } else {
                 self.contentView.isHidden = false
-                // Get the data from the data source
-                let renderingMode: UIImage.RenderingMode = dataSource?.imageTintColor(self) != nil ? .alwaysTemplate : .alwaysOriginal
-                
+                                
                 contentView.spacing = dataSource?.verticalSpacing(self) ?? 11
                 
                 // Configure Image
-                if let image = dataSource?.image(self) {
-                    imageView.image = image.withRenderingMode(renderingMode)
-                    if let imageTintColor = dataSource?.imageTintColor(self) {
-                        imageView.tintColor = imageTintColor
-                    }
-                }
+                image(dataSource?.image(self))
+                imageTintColor(dataSource?.imageTintColor(self))
+
                 // Configure title label
                 titleLabelString(dataSource?.title(self))
                 // Configure detail label

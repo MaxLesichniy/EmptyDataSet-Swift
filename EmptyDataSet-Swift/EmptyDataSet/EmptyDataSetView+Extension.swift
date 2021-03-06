@@ -43,7 +43,8 @@ extension EmptyDataSetView {
     @discardableResult
     public func imageTintColor(_ imageTintColor: UIColor?) -> Self {
         imageView.tintColor = imageTintColor
-        return self
+        let renderingMode: UIImage.RenderingMode = imageTintColor != nil ? .alwaysTemplate : .alwaysOriginal
+        return image(imageView.image?.withRenderingMode(renderingMode))
     }
     
     /// Asks the data source for the image animation of the dataset.

@@ -9,19 +9,10 @@
 import Foundation
 import UIKit
 
-class WeakObjectContainer: NSObject {
-    weak var weakObject: AnyObject?
-    
-    init(with weakObject: Any?) {
-        super.init()
-        self.weakObject = weakObject as AnyObject?
-    }
-}
+private var kEmptyDataSetView = "emptyDataSetView"
+private var kConfigureEmptyDataSetView = "configureEmptyDataSetView"
 
-private var kEmptyDataSetView =             "emptyDataSetView"
-private var kConfigureEmptyDataSetView =    "configureEmptyDataSetView"
-
-extension UIScrollView: UIGestureRecognizerDelegate {
+extension UIScrollView {
     
     //MARK: - Public Property
     
@@ -35,7 +26,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             } else if emptyDataSetView == nil {
                 prepareEmptyDataSetView()
             }
-
+            
             emptyDataSetView?.dataSource = newValue
         }
     }
@@ -75,8 +66,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     }
     
     private func prepareEmptyDataSetView() {
-        let view = EmptyDataSetView(frame: frame)
+        let view = EmptyDataSetView(frame: bounds)
         view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+//        view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
         
         // Send the view all the way to the back, in case a header and/or footer is present, as well as for sectionHeaders or any other content
@@ -85,6 +77,11 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         } else {
             addSubview(view)
         }
+        
+//        NSLayoutConstraint.activate([view.topAnchor.constraint(equalTo: topAnchor),
+//                                     view.leadingAnchor.constraint(equalTo: leadingAnchor),
+//                                     view.trailingAnchor.constraint(equalTo: trailingAnchor),
+//                                     view.bottomAnchor.constraint(equalTo: bottomAnchor)])
         
         emptyDataSetView = view
         
@@ -127,15 +124,16 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                 }
             }
         }
-
+        
         return items
     }
-
+    
     private func invalidate() {
         emptyDataSetView?.invalidate()
     }
     
     public func reloadEmptyDataSet() {
+        emptyDataSetView?.frame = bounds
         emptyDataSetView?.reloadEmptyDataSet(itemsCount: itemsCount)
     }
     
@@ -188,7 +186,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             method_exchangeImplementations(originalMethod!, swizzledMethod!)
         }
     }
-
+    
     private static let swizzleLayoutSubviews: () = {
         swizzleMethod(for: UIScrollView.self,
                       originalSelector: #selector(UIScrollView.layoutSubviews),
