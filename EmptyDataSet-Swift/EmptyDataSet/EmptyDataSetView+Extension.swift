@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 extension EmptyDataSetView {
     
@@ -33,7 +32,7 @@ extension EmptyDataSetView {
     
     /// Asks the data source for the image of the dataset.
     @discardableResult
-    public func image(_ image: UIImage?) -> Self {
+    public func image(_ image: Image?) -> Self {
         imageView.image = image
         imageView.isHidden = !canShowImage
         return self
@@ -41,21 +40,28 @@ extension EmptyDataSetView {
     
     /// Asks the data source for a tint color of the image dataset. Default is nil.
     @discardableResult
-    public func imageTintColor(_ imageTintColor: UIColor?) -> Self {
+    public func imageTintColor(_ imageTintColor: Color?) -> Self {
+        #if os(iOS)
         imageView.tintColor = imageTintColor
         let renderingMode: UIImage.RenderingMode = imageTintColor != nil ? .alwaysTemplate : .alwaysOriginal
         return image(imageView.image?.withRenderingMode(renderingMode))
+        #else
+        return self
+        #endif
     }
     
     /// Asks the data source for the image animation of the dataset.
     @discardableResult
     public func imageAnimation(_ imageAnimation: CAAnimation?) -> Self {
-        if let ani = imageAnimation {
-            imageView.layer.add(ani, forKey: nil)
+        #if os(iOS)
+        imageAnimation.map {
+            imageView.layer.add($0, forKey: nil)
         }
+        #endif
         return self
     }
     
+    #if os(iOS)
     /// Asks the data source for the title to be used for the specified button state.
     /// The dataset uses a fixed font style by default, if no attributes are set. If you want a different font style, return a attributed string.
     @discardableResult
@@ -81,11 +87,16 @@ extension EmptyDataSetView {
         button.setBackgroundImage(buttonBackgroundImage, for: state)
         return self
     }
+    #endif
     
     /// Asks the data source for the background color of the dataset. Default is clear color.
     @discardableResult
-    public func dataSetBackgroundColor(_ backgroundColor: UIColor?) -> Self {
+    public func dataSetBackgroundColor(_ backgroundColor: Color?) -> Self {
+        #if os(iOS)
         self.backgroundColor = backgroundColor
+        #else
+        self.layer?.backgroundColor = backgroundColor?.cgColor
+        #endif
         return self
     }
     
@@ -93,7 +104,7 @@ extension EmptyDataSetView {
     /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
     /// Returning a custom view will ignore -offsetForEmptyDataSet and -spaceHeightForEmptyDataSet configurations.
     @discardableResult
-    public func customView(_ customView: UIView?) -> Self {
+    public func customView(_ customView: View?) -> Self {
         self.customView = customView
         return self
     }
@@ -131,14 +142,17 @@ extension EmptyDataSetView {
     /// Asks the delegate to know if the empty dataset should be rendered and displayed. Default is true.
     @discardableResult
     public func shouldDisplay(_ bool: Bool) -> Self {
+        #if os(iOS)
         if let superview = self.superview as? UIScrollView {
             isHidden = !(bool && superview.itemsCount == 0)
         } else {
             isHidden = !bool
         }
+        #endif
         return self
     }
     
+    #if os(iOS)
     /// Asks the delegate for touch permission. Default is true.
     @discardableResult
     public func isTouchAllowed(_ bool: Bool) -> Self {
@@ -154,17 +168,21 @@ extension EmptyDataSetView {
         }
         return self
     }
+    #endif
     
     /// Asks the delegate for image view animation permission. Default is false.
     /// Make sure to return a valid CAAnimation object from imageAnimationForEmptyDataSet:
     @discardableResult
     public func isImageViewAnimateAllowed(_ bool: Bool) -> Self {
+        #if os(iOS)
         if !bool {
             imageView.layer.removeAllAnimations()
         }
+        #endif
         return self
     }
     
+    #if os(iOS)
     /// Tells the delegate that the empty dataset view was tapped.
     /// Use this method either to resignFirstResponder of a textfield or searchBar.
     @discardableResult
@@ -172,6 +190,7 @@ extension EmptyDataSetView {
         didTapContentViewHandle = closure
         return self
     }
+    #endif
     
     /// Tells the delegate that the action button was tapped.
     @discardableResult

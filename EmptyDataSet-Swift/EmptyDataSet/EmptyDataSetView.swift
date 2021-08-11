@@ -7,75 +7,122 @@
 //
 
 import Foundation
-import UIKit
 
-open class EmptyDataSetView: UIView {
+public protocol EmptyDataSetState: Hashable {
+    
+}
+
+public struct EmptyDataSetStateConfiguration {
+    var title: String?
+    var attributedTitle: NSAttributedString?
+    var details: String?
+    var attributedDetails: NSAttributedString?
+    var image: Image?
+    
+    init(_ base: EmptyDataSetStateConfiguration) {
+        self.title = base.title
+        self.attributedTitle = base.attributedTitle
+        self.details = base.details
+        self.attributedDetails = base.attributedDetails
+        self.image = base.image
+    }
+}
+
+open class EmptyDataSetView: View {
     
     public weak var dataSource: EmptyDataSetSource?
     public weak var delegate: EmptyDataSetDelegate?
     public var configure: ((EmptyDataSetView) -> Void)?
+    public var verticalAlignment: VerticalAlignment = .center
     
-    internal lazy var contentView: UIStackView = {
-        let contentView = UIStackView()
+    public internal(set) lazy var contentView: StackView = {
+        let contentView = StackView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        #if os(iOS)
         contentView.axis = .vertical
         contentView.alignment = .center
-        contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = true
         contentView.alpha = 0
-        contentView.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        contentView.layoutMargins = EdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         contentView.isLayoutMarginsRelativeArrangement = true
+        #else
+        contentView.orientation = .vertical
+        contentView.alignment = .centerX
+        contentView.alphaValue = 0
+        contentView.edgeInsets = EdgeInsets(top: 36, left: 36, bottom: 36, right: 36)
+        #endif
         return contentView
     }()
     
-    public internal(set) lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
+    public internal(set) lazy var imageView: ImageView = {
+        let imageView = ImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = UIColor.clear
+        #if os(iOS)
+        imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = false
         imageView.accessibilityIdentifier = "empty set background image"
+        #else
+        imageView.imageScaling = .scaleProportionallyDown
+        #endif
         return imageView
     }()
     
-    public internal(set) lazy var titleLabel: UILabel = {
-        let titleLabel = UILabel()
+    public internal(set) lazy var titleLabel: Label = {
+        let titleLabel = Label()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.backgroundColor = UIColor.clear
-        
-        titleLabel.font = UIFont.systemFont(ofSize: 27.0)
-        titleLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
-        titleLabel.textAlignment = .center
         titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.font = .systemFont(ofSize: 27.0)
+        titleLabel.textColor = .init(white: 0.6, alpha: 1.0)
+        #if os(iOS)
+        titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
         titleLabel.accessibilityIdentifier = "empty set title"
+        #else
+        titleLabel.alignment = .center
+        titleLabel.maximumNumberOfLines = 0
+        titleLabel.isEditable = false
+        titleLabel.isBordered = false
+        titleLabel.drawsBackground = false
+        #endif
         return titleLabel
     }()
     
-    public internal(set) lazy var detailLabel: UILabel = {
-        let detailLabel = UILabel()
+    public internal(set) lazy var detailLabel: Label = {
+        let detailLabel = Label()
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailLabel.backgroundColor = UIColor.clear
-        
-        detailLabel.font = UIFont.systemFont(ofSize: 17.0)
-        detailLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
-        detailLabel.textAlignment = .center
         detailLabel.lineBreakMode = .byWordWrapping
+        detailLabel.font = .systemFont(ofSize: 17.0)
+        detailLabel.textColor = .init(white: 0.6, alpha: 1.0)
+        #if os(iOS)
+        detailLabel.textAlignment = .center
         detailLabel.numberOfLines = 0
         detailLabel.accessibilityIdentifier = "empty set detail label"
+        #else
+        detailLabel.alignment = .center
+        detailLabel.maximumNumberOfLines = 0
+        detailLabel.isEditable = false
+        detailLabel.isBordered = false
+        detailLabel.drawsBackground = false
+        #endif
         return detailLabel
     }()
     
-    public internal(set) lazy var button: UIButton = { [unowned self] in
-        let button = UIButton(type: .custom)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.clear
-        button.contentHorizontalAlignment = .center
-        button.contentVerticalAlignment = .center
-        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+    public internal(set) lazy var button: Button = { [unowned self] in
+        let button: Button
+        let contentEdgeInsets = EdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        #if os(iOS)
+        button = UIButton(type: .custom)
+        button.contentEdgeInsets = contentEdgeInsets
         button.accessibilityIdentifier = "empty set button"
-        button.isHidden = true
         button.addTarget(self, action: #selector(didTapDataButtonHandler(_:)), for: .touchUpInside)
+        #else
+        button = NSButton()
+        button.target = self
+        button.action = #selector(didTapDataButtonHandler(_:))
+        #endif
+        button.isHidden = true
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -98,16 +145,19 @@ open class EmptyDataSetView: UIView {
     }
     
     internal var canShowButton: Bool {
+        #if os(iOS)
         if let attributedTitle = button.attributedTitle(for: .normal) {
             return attributedTitle.length > 0
         } else if let _ = button.image(for: .normal) {
             return true
         }
-        
         return false
+        #else
+        return button.attributedTitle.length > 0 || button.image != nil
+        #endif
     }
     
-    internal var customView: UIView? {
+    internal var customView: View? {
         willSet {
             if let customView = customView {
                 customView.removeFromSuperview()
@@ -150,16 +200,20 @@ open class EmptyDataSetView: UIView {
         contentView.addArrangedSubview(detailLabel)
         contentView.addArrangedSubview(button)
 
+        #if os(iOS)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
         addGestureRecognizer(tapGestureRecognizer)
+        #endif
     }
     
+    #if os(iOS)
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         
-        if let superviewBounds = superview?.bounds {
-            frame = CGRect(x: 0, y: 0, width: superviewBounds.width, height: superviewBounds.height)
-        }
+//        if let superviewBounds = superview?.bounds {
+//            frame = CGRect(x: 0, y: 0, width: superviewBounds.width, height: superviewBounds.height)
+//        }
+        
         if fadeInOnDisplay {
             UIView.animate(withDuration: 0.25) {
                 self.contentView.alpha = 1
@@ -168,28 +222,52 @@ open class EmptyDataSetView: UIView {
             contentView.alpha = 1
         }
     }
+    #else
+    open override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if fadeInOnDisplay {
+            // TODO: set duration
+            contentView.animator().alphaValue = 1
+        } else {
+            contentView.alphaValue = 1
+        }
+    }
+    #endif
     
-    public func setDetailLabel(_ label: UILabel) {
+    public func setDetailLabel(_ label: Label) {
+        // FIXME: contentView.addArrangedSubview(detailLabel)
         self.detailLabel = label
         self.contentView.addSubview(label)
     }
     
     // MARK: - Action Methods
     
-    internal func prepareForReuse() {
+    #if os(macOS)
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        _prepareForReuse()
+    }
+    #else
+    func prepareForReuse() {
+        _prepareForReuse()
+    }
+    #endif
+    
+    func _prepareForReuse() {
         titleLabelString(nil)
         detailLabelString(nil)
         image(nil)
         
+        #if canImport(UIKit)
         let buttonStates: [UIControl.State] = [.highlighted, .normal]
         buttonStates.forEach {
             buttonTitle(nil, for: $0)
             buttonImage(nil, for: $0)
             buttonBackgroundImage(nil, for: $0)
         }
+        #endif
 
         button.isHidden = true
-        
         customView = nil
     }
     
@@ -199,59 +277,30 @@ open class EmptyDataSetView: UIView {
         self.removeConstraints(_constraints)
         _constraints.removeAll()
         
-        if let customView = customView {
-            let centerXConstraint = NSLayoutConstraint(item: customView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-            let centerYConstraint = NSLayoutConstraint(item: customView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0)
-            
-            let customViewHeight = customView.frame.height
-            let customViewWidth = customView.frame.width
-            
-            let heightConstarint: NSLayoutConstraint
-            
-            if (customViewHeight == 0) {
-                heightConstarint = NSLayoutConstraint(item: customView, attribute: .height, relatedBy: .lessThanOrEqual, toItem: self, attribute: .height, multiplier: 1, constant: 0.0)
-            } else {
-                heightConstarint = NSLayoutConstraint(item: customView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: customViewHeight)
-            }
-            
-            let widthConstarint: NSLayoutConstraint
-
-            if (customViewWidth == 0) {
-                widthConstarint = NSLayoutConstraint(item: customView, attribute: .width, relatedBy: .lessThanOrEqual, toItem: self, attribute: .width, multiplier: 1, constant: 0.0)
-            } else {
-                widthConstarint = NSLayoutConstraint(item: customView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: customViewWidth)
-            }
-            
-            // When a custom offset is available, we adjust the vertical constraints' constants
-            if (verticalOffset != 0) {
-                centerYConstraint.constant = verticalOffset
-            }
-            
-            _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
-            _constraints.append(contentsOf: [heightConstarint, widthConstarint])
-            
+        let view = customView ?? contentView
+        
+        // First, configure the content view constaints
+        // The content view must alway be centered to its superview
+        let item: Any
+        
+        if #available(iOS 11, macOS 11.0, *) {
+            item = self.layoutMarginsGuide
         } else {
-            // First, configure the content view constaints
-            // The content view must alway be centered to its superview
-            let item: Any
-            
-            if #available(iOS 11, *) {
-                item = self.safeAreaLayoutGuide
-            } else {
-                item = self
-            }
-            
-            let centerXConstraint = NSLayoutConstraint(item: contentView, attribute: .centerX, relatedBy: .equal, toItem: item, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-            let centerYConstraint = NSLayoutConstraint(item: contentView, attribute: .centerY, relatedBy: .equal, toItem: item, attribute: .centerY, multiplier: 1.0, constant: 0.0)
-            
-            _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
-            _constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": contentView]))
-            
-            // When a custom offset is available, we adjust the vertical constraints' constants
-            if (verticalOffset != 0 && _constraints.count > 0) {
-                centerYConstraint.constant = verticalOffset
-            }
+            item = self
         }
+        
+        let centerXConstraint = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: item, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+        let centerYConstraint = NSLayoutConstraint(item: view, attribute: verticalAlignment.layoutConstraintAttribute, relatedBy: .equal, toItem: item, attribute: verticalAlignment.layoutConstraintAttribute, multiplier: 1.0, constant: 0.0) // setup verticalOffset
+
+        _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
+        _constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": view]))
+        
+        // TODO: delete this code block
+        // When a custom offset is available, we adjust the vertical constraints' constants
+        if (verticalOffset != 0 && _constraints.count > 0) {
+            centerYConstraint.constant = verticalOffset
+        }
+        
         
         self.addConstraints(_constraints)
     }
@@ -302,94 +351,107 @@ open class EmptyDataSetView: UIView {
         didDisappearHandle?()
     }
     
-    @objc private func didTapDataButtonHandler(_ sender: UIButton) {
+    @objc private func didTapDataButtonHandler(_ sender: Button) {
         delegate?.emptyDataSet(self, didTapButton: sender)
         didTapDataButtonHandle?()
     }
     
-    
+    #if os(iOS)
     @objc private func didTapContentViewHandler(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         delegate?.emptyDataSet(self, didTapView: view)
         didTapContentViewHandle?()
     }
+    #endif
     
     //MARK: - Reload APIs (Public)
     public func reloadEmptyDataSet(itemsCount: Int = 0) {
-        guard dataSource != nil else { return }
+        guard let dataSource = self.dataSource else {
+            invalidateIfNedded()
+            return
+        }
         
-        if ((shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay) && dataSource != nil {
-            // Notifies that the empty dataset view will appear
-            willAppear()
-            
-            // Configure empty dataset fade in display
-            fadeInOnDisplay = shouldFadeIn
-            
-            // Removing view resetting the view and its constraints it very important to guarantee a good state
-            // If a non-nil custom view is available, let's configure it instead
-            prepareForReuse()
-            
-            if let customView = dataSource?.customView(self) {
-                self.contentView.isHidden = true
-                self.customView = customView
-            } else {
-                self.contentView.isHidden = false
-                                
-                contentView.spacing = dataSource?.verticalSpacing(self) ?? 11
-                
-                // Configure Image
-                image(dataSource?.image(self))
-                imageTintColor(dataSource?.imageTintColor(self))
-
-                // Configure title label
-                titleLabelString(dataSource?.title(self))
-                // Configure detail label
-                detailLabelString(dataSource?.description(self))
-                // Configure button
-                if let image = dataSource?.buttonImage(self, for: .normal) {
-                    buttonImage(image, for: .normal)
-                    buttonImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
-                } else if let title = dataSource?.buttonTitle(self, for: .normal) {
-                    buttonTitle(title, for: .normal)
-                    buttonTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
-                    buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
-                    buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
-                }
-            }
-            
+        guard (shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay else {
+            invalidateIfNedded()
+            return
+        }
+        
+        // Notifies that the empty dataset view will appear
+        willAppear()
+        
+        // Configure empty dataset fade in display
+        fadeInOnDisplay = shouldFadeIn
+        
+        // Removing view resetting the view and its constraints it very important to guarantee a good state
+        // If a non-nil custom view is available, let's configure it instead
+        prepareForReuse()
+        
+        if let customView = dataSource.customView(self) {
+            self.contentView.isHidden = true
+            self.customView = customView
+        } else {
+            self.contentView.isHidden = false
+                            
+            contentView.spacing = dataSource.verticalSpacing(self)
             // Configure offset
-            verticalOffset = dataSource?.verticalOffset(self) ?? 0
+            verticalOffset = dataSource.verticalOffset(self)
             
-            // Configure the empty dataset view
-            backgroundColor = dataSource?.backgroundColor(self)
-            isHidden = false
-            clipsToBounds = true
-            
-            // Configure empty dataset userInteraction permission
-            isUserInteractionEnabled = isTouchAllowed
-            
-            // Configure scroll permission
-            if let scrollView = superview as? UIScrollView {
-                scrollView.isScrollEnabled = isScrollAllowed
+            // Configure Image
+            image(dataSource.image(self))
+            imageTintColor(dataSource.imageTintColor(self))
+            // Configure title label
+            titleLabelString(dataSource.title(self))
+            // Configure detail label
+            detailLabelString(dataSource.description(self))
+            // Configure button
+            #if os(iOS)
+            if let image = dataSource.buttonImage(self, for: .normal) {
+                buttonImage(image, for: .normal)
+                buttonImage(dataSource.buttonImage(self, for: .highlighted), for: .highlighted)
+            } else if let title = dataSource.buttonTitle(self, for: .normal) {
+                buttonTitle(title, for: .normal)
+                buttonTitle(dataSource.buttonTitle(self, for: .highlighted), for: .highlighted)
+                buttonBackgroundImage(dataSource.buttonBackgroundImage(self, for: .normal), for: .normal)
+                buttonBackgroundImage(dataSource.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
             }
-            
-            // Configure image view animation
-            if self.isImageViewAnimateAllowed {
-                if let animation = dataSource?.imageAnimation(self) {
-                    imageView.layer.add(animation, forKey: nil)
-                }
-            } else {
-                imageView.layer.removeAllAnimations()
+            #endif
+        }
+        
+        isHidden = false
+        
+        #if os(iOS)
+        // Configure the empty dataset view
+        backgroundColor = dataSource.backgroundColor(self)
+        clipsToBounds = true
+        
+        // Configure empty dataset userInteraction permission
+        isUserInteractionEnabled = isTouchAllowed
+        
+        // Configure scroll permission
+        if let scrollView = superview as? UIScrollView {
+            scrollView.isScrollEnabled = isScrollAllowed
+        }
+        
+        // Configure image view animation
+        if self.isImageViewAnimateAllowed {
+            if let animation = dataSource.imageAnimation(self) {
+                imageView.layer.add(animation, forKey: nil)
             }
-            
-            configure?(self)
-            
-            setNeedsUpdateConstraints()
-//            layoutIfNeeded()
-            
-            // Notifies that the empty dataset view did appear
-            didAppear()
-        } else if !isHidden {
+        } else {
+            imageView.layer.removeAllAnimations()
+        }
+        #endif
+        
+        configure?(self)
+        
+        setNeedsUpdateConstraints()
+        
+        // Notifies that the empty dataset view did appear
+        didAppear()
+    }
+    
+    internal func invalidateIfNedded() {
+        if !isHidden {
             invalidate()
         }
     }
@@ -398,11 +460,33 @@ open class EmptyDataSetView: UIView {
         willDisappear()
         prepareForReuse()
         isHidden = true
+        #if os(iOS)
         if let scrollView = superview as? UIScrollView {
             scrollView.isScrollEnabled = true
         }
+        #endif
         didDisappear()
     }
     
 }
 
+extension EmptyDataSetView {
+    
+    public enum VerticalAlignment: Int {
+        case top
+        case center
+        case bottom
+        
+        var layoutConstraintAttribute: NSLayoutConstraint.Attribute {
+            switch self {
+            case .top:
+                return .top
+            case .center:
+                return .centerY
+            case .bottom:
+                return .bottom
+            }
+        }
+    }
+    
+}

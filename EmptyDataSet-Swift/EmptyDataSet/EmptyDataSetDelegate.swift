@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 
 /// The object that acts as the delegate of the empty datasets.
@@ -59,14 +58,14 @@ public protocol EmptyDataSetDelegate: class {
     /// - Parameters:
     ///   - scrollView: scrollView A scrollView subclass informing the delegate.
     ///   - view: the view tapped by the user
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: UIView)
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: View)
 
     /// Tells the delegate that the action button was tapped.
     ///
     /// - Parameters:
     ///   - scrollView: A scrollView subclass informing the delegate.
     ///   - button: the button tapped by the user
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: UIButton)
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: Button)
 
     /// Tells the delegate that the empty data set will appear.
     ///
@@ -116,11 +115,11 @@ public extension EmptyDataSetDelegate {
         return false
     }
     
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: UIView) {
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: View) {
         
     }
     
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: UIButton) {
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: Button) {
         
     }
     
