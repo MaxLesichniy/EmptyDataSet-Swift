@@ -6,27 +6,7 @@
 //  Copyright © 2017年 Xiaoye. All rights reserved.
 //
 
-import Foundation
-
-public protocol EmptyDataSetState: Hashable {
-    
-}
-
-public struct EmptyDataSetStateConfiguration {
-    var title: String?
-    var attributedTitle: NSAttributedString?
-    var details: String?
-    var attributedDetails: NSAttributedString?
-    var image: Image?
-    
-    init(_ base: EmptyDataSetStateConfiguration) {
-        self.title = base.title
-        self.attributedTitle = base.attributedTitle
-        self.details = base.details
-        self.attributedDetails = base.attributedDetails
-        self.image = base.image
-    }
-}
+import UIKit
 
 open class EmptyDataSetView: View {
     
@@ -34,6 +14,13 @@ open class EmptyDataSetView: View {
     public weak var delegate: EmptyDataSetDelegate?
     public var configure: ((EmptyDataSetView) -> Void)?
     public var verticalAlignment: VerticalAlignment = .center
+    
+    public var state: EmptyDataSetViewState? {
+        didSet {
+            guard state != oldValue else { return }
+            reloadEmptyDataSet()
+        }
+    }
     
     public internal(set) lazy var contentView: StackView = {
         let contentView = StackView()
@@ -126,6 +113,15 @@ open class EmptyDataSetView: View {
         return button
     }()
     
+    open var textColor: UIColor? {
+        didSet {
+            titleLabel.textColor = textColor
+            detailLabel.textColor = textColor
+        }
+    }
+    
+    internal var currentlyDisplayedState: EmptyDataSetViewState?
+    
     internal var canShowImage: Bool {
         return imageView.image != nil
     }
@@ -148,6 +144,8 @@ open class EmptyDataSetView: View {
         #if os(iOS)
         if let attributedTitle = button.attributedTitle(for: .normal) {
             return attributedTitle.length > 0
+        } else if let title = button.title(for: .normal) {
+            return !title.isEmpty
         } else if let _ = button.image(for: .normal) {
             return true
         }
@@ -254,21 +252,21 @@ open class EmptyDataSetView: View {
     #endif
     
     func _prepareForReuse() {
-        titleLabelString(nil)
-        detailLabelString(nil)
-        image(nil)
+        setupTitleLabel(with: nil)
+        setupDetailsLabel(with: nil)
+        setupImageView(with: nil)
         
         #if canImport(UIKit)
         let buttonStates: [UIControl.State] = [.highlighted, .normal]
         buttonStates.forEach {
             buttonTitle(nil, for: $0)
             buttonImage(nil, for: $0)
-            buttonBackgroundImage(nil, for: $0)
         }
         #endif
 
         button.isHidden = true
         customView = nil
+        currentlyDisplayedState = nil
     }
     
     open override func updateConstraints() {
@@ -353,6 +351,7 @@ open class EmptyDataSetView: View {
     
     @objc private func didTapDataButtonHandler(_ sender: Button) {
         delegate?.emptyDataSet(self, didTapButton: sender)
+        currentlyDisplayedState?.buttonHandler?()
         didTapDataButtonHandle?()
     }
     
@@ -364,9 +363,11 @@ open class EmptyDataSetView: View {
     }
     #endif
     
-    //MARK: - Reload APIs (Public)
+    // MARK: - Reload APIs (Public)
     public func reloadEmptyDataSet(itemsCount: Int = 0) {
-        guard let dataSource = self.dataSource else {
+        let state = self.state ?? makeStateFromDataSource()
+        
+        guard let state = state else {
             invalidateIfNedded()
             return
         }
@@ -386,33 +387,27 @@ open class EmptyDataSetView: View {
         // If a non-nil custom view is available, let's configure it instead
         prepareForReuse()
         
-        if let customView = dataSource.customView(self) {
+        if let customView = dataSource?.customView(self) {
             self.contentView.isHidden = true
             self.customView = customView
         } else {
             self.contentView.isHidden = false
                             
-            contentView.spacing = dataSource.verticalSpacing(self)
+            contentView.spacing = dataSource?.verticalSpacing(self) ?? 11
             // Configure offset
-            verticalOffset = dataSource.verticalOffset(self)
+            verticalOffset = dataSource?.verticalOffset(self) ?? 0
             
-            // Configure Image
-            image(dataSource.image(self))
-            imageTintColor(dataSource.imageTintColor(self))
-            // Configure title label
-            titleLabelString(dataSource.title(self))
-            // Configure detail label
-            detailLabelString(dataSource.description(self))
-            // Configure button
+            setup(with: state)
+            
             #if os(iOS)
-            if let image = dataSource.buttonImage(self, for: .normal) {
+            if let image = dataSource?.buttonImage(self, for: .normal) {
                 buttonImage(image, for: .normal)
-                buttonImage(dataSource.buttonImage(self, for: .highlighted), for: .highlighted)
-            } else if let title = dataSource.buttonTitle(self, for: .normal) {
+                buttonImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
+            } else if let title = dataSource?.buttonTitle(self, for: .normal) {
                 buttonTitle(title, for: .normal)
-                buttonTitle(dataSource.buttonTitle(self, for: .highlighted), for: .highlighted)
-                buttonBackgroundImage(dataSource.buttonBackgroundImage(self, for: .normal), for: .normal)
-                buttonBackgroundImage(dataSource.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
+                buttonTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
+//                buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
+//                buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
             }
             #endif
         }
@@ -421,7 +416,7 @@ open class EmptyDataSetView: View {
         
         #if os(iOS)
         // Configure the empty dataset view
-        backgroundColor = dataSource.backgroundColor(self)
+        backgroundColor = dataSource?.backgroundColor(self)
         clipsToBounds = true
         
         // Configure empty dataset userInteraction permission
@@ -434,7 +429,7 @@ open class EmptyDataSetView: View {
         
         // Configure image view animation
         if self.isImageViewAnimateAllowed {
-            if let animation = dataSource.imageAnimation(self) {
+            if let animation = dataSource?.imageAnimation(self) {
                 imageView.layer.add(animation, forKey: nil)
             }
         } else {
@@ -450,15 +445,69 @@ open class EmptyDataSetView: View {
         didAppear()
     }
     
-    internal func invalidateIfNedded() {
+    func setup(with state: EmptyDataSetViewState?) {
+        let attributedTitle = state?.attributedTitle ?? state?.title.map { NSAttributedString(string: $0) }
+        let attributedDetails = state?.attributedDetails ?? state?.details.map { NSAttributedString(string: $0) }
+        setupTitleLabel(with: attributedTitle)
+        setupDetailsLabel(with: attributedDetails)
+        setupImageView(with: state?.image)
+        #if os(iOS)
+        setupButtonTitle(with: state?.buttonTitle, for: .normal)
+        #endif
+        
+        currentlyDisplayedState = state
+    }
+    
+    func setupTitleLabel(with attributedText: NSAttributedString?) {
+        titleLabel.attributedText = attributedText
+        titleLabel.isHidden = !canShowTitle
+    }
+    
+    func setupDetailsLabel(with attributedText: NSAttributedString?) {
+        detailLabel.attributedText = attributedText
+        detailLabel.isHidden = !canShowDetail
+    }
+
+    func setupImageView(with image: Image?) {
+        imageView.image = image
+        imageView.isHidden = !canShowImage
+    }
+
+    #if os(iOS)
+    func setupButtonTitle(with buttonTitle: String?, for state: UIControl.State) {
+        button.setTitle(buttonTitle, for: state)
+        button.isHidden = !canShowButton
+    }
+    
+    func setupButtonTitle(with buttonTitle: NSAttributedString?, for state: UIControl.State) {
+        button.setAttributedTitle(buttonTitle, for: state)
+        button.isHidden = !canShowButton
+    }
+    #endif
+    
+    func makeStateFromDataSource() -> EmptyDataSetViewState? {
+        guard let dataSource = self.dataSource else { return nil }
+        if let stateFromDataSource = dataSource.emptyDataSetViewState(self) {
+            return stateFromDataSource
+        }
+        var state = EmptyDataSetViewState()
+        state.attributedTitle = dataSource.title(self)
+        state.attributedDetails = dataSource.description(self)
+        state.image = dataSource.image(self)
+        state.buttonTitle = dataSource.buttonTitle(self, for: .normal)?.string
+        return state
+    }
+    
+    func invalidateIfNedded() {
         if !isHidden {
             invalidate()
         }
     }
     
-    internal func invalidate() {
+    func invalidate() {
         willDisappear()
         prepareForReuse()
+        currentlyDisplayedState = nil
         isHidden = true
         #if os(iOS)
         if let scrollView = superview as? UIScrollView {
