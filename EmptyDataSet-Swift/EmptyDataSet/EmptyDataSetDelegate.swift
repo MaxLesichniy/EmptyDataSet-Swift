@@ -100,7 +100,7 @@ public extension EmptyDataSetDelegate {
     }
     
     func emptyDataSetShouldDisplay(_ emptyDataSetView: EmptyDataSetView) -> Bool {
-        return true
+        return emptyDataSetView.shouldDisplay
     }
     
     func emptyDataSetShouldAllowTouch(_ emptyDataSetView: EmptyDataSetView) -> Bool {

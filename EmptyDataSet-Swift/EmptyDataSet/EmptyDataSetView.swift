@@ -14,7 +14,7 @@ open class EmptyDataSetView: View {
     public weak var delegate: EmptyDataSetDelegate?
     public var configure: ((EmptyDataSetView) -> Void)?
     public var verticalAlignment: VerticalAlignment = .center
-    
+    public var shouldDisplay: Bool = true
     public var state: EmptyDataSetViewState? {
         didSet {
             guard state != oldValue else { return }
@@ -309,10 +309,6 @@ open class EmptyDataSetView: View {
         return delegate?.emptyDataSetShouldFadeIn(self) ?? true
     }
     
-    private var shouldDisplay: Bool {
-        return delegate?.emptyDataSetShouldDisplay(self) ?? true
-    }
-    
     private var shouldBeForcedToDisplay: Bool {
         return delegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false
     }
@@ -372,6 +368,8 @@ open class EmptyDataSetView: View {
             return
         }
         
+        let shouldDisplay = delegate?.emptyDataSetShouldDisplay(self) ?? shouldDisplay
+       
         guard (shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay else {
             invalidateIfNedded()
             return
