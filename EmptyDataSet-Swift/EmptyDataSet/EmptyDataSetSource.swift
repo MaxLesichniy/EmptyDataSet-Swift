@@ -155,6 +155,6 @@ public extension EmptyDataSetSource {
     }
  
     func verticalSpacing(_ emptyDataSetView: EmptyDataSetView) -> CGFloat {
-        return 11
+        return emptyDataSetView.spacing
     }
 }

@@ -67,7 +67,6 @@ extension UIScrollView {
     private func prepareEmptyDataSetView() {
         let view = EmptyDataSetView(frame: bounds)
         view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-//        view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
         
         // Send the view all the way to the back, in case a header and/or footer is present, as well as for sectionHeaders or any other content
@@ -76,11 +75,6 @@ extension UIScrollView {
         } else {
             addSubview(view)
         }
-        
-//        NSLayoutConstraint.activate([view.topAnchor.constraint(equalTo: topAnchor),
-//                                     view.leadingAnchor.constraint(equalTo: leadingAnchor),
-//                                     view.trailingAnchor.constraint(equalTo: trailingAnchor),
-//                                     view.bottomAnchor.constraint(equalTo: bottomAnchor)])
         
         emptyDataSetView = view
         
@@ -161,7 +155,16 @@ extension UIScrollView {
     }
     
     @objc private func eds_swizzledCollectionViewPerformBatchUpdates(_ updates: (() -> Void)?, completion: ((Bool) -> Void)? = nil) {
-        eds_swizzledCollectionViewPerformBatchUpdates(updates) { [weak self] (finished) in
+        let oldItemsCount = self.itemsCount
+        eds_swizzledCollectionViewPerformBatchUpdates { [weak self] in
+            updates?()
+            guard let `self` = self else { return }
+            if self.itemsCount != oldItemsCount {
+                if self.itemsCount == 0 || oldItemsCount == 0 {
+                    self.invalidate()
+                }
+            }
+        } completion: { [weak self] (finished) in
             self?.reloadEmptyDataSet()
             completion?(finished)
         }

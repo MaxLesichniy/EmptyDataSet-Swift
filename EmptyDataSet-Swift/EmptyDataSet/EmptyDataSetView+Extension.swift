@@ -106,6 +106,8 @@ extension EmptyDataSetView {
     @discardableResult
     public func customView(_ customView: View?) -> Self {
         self.customView = customView
+        self.contentView.isHidden = customView != nil
+        self.setNeedsUpdateConstraints()
         return self
     }
     
@@ -126,11 +128,11 @@ extension EmptyDataSetView {
     
     //MARK: - Delegate & Events
     /// Asks the delegate to know if the empty dataset should fade in when displayed. Default is true.
-    @discardableResult
-    public func shouldFadeIn(_ bool: Bool) -> Self {
-        fadeInOnDisplay = bool
-        return self
-    }
+//    @discardableResult
+//    public func shouldFadeIn(_ bool: Bool) -> Self {
+//        fadeInOnDisplay = bool
+//        return self
+//    }
     
     /// Asks the delegate to know if the empty dataset should still be displayed when the amount of items is more than 0. Default is false.
     @discardableResult

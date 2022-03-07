@@ -14,10 +14,12 @@ open class EmptyDataSetView: View {
     public weak var delegate: EmptyDataSetDelegate?
     public var configure: ((EmptyDataSetView) -> Void)?
     public var verticalAlignment: VerticalAlignment = .center
+    public var spacing: CGFloat = 11.0
     public var shouldDisplay: Bool = true
     public var state: EmptyDataSetViewState? {
         didSet {
-            guard state != oldValue else { return }
+            guard state != oldValue,
+                  state != currentlyDisplayedState else { return }
             reloadEmptyDataSet()
         }
     }
@@ -30,7 +32,6 @@ open class EmptyDataSetView: View {
         contentView.alignment = .center
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = true
-        contentView.alpha = 0
         contentView.layoutMargins = EdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         contentView.isLayoutMarginsRelativeArrangement = true
         #else
@@ -63,7 +64,7 @@ open class EmptyDataSetView: View {
         titleLabel.textColor = .init(white: 0.6, alpha: 1.0)
         #if os(iOS)
         titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = 2
         titleLabel.accessibilityIdentifier = "empty set title"
         #else
         titleLabel.alignment = .center
@@ -83,7 +84,7 @@ open class EmptyDataSetView: View {
         detailLabel.textColor = .init(white: 0.6, alpha: 1.0)
         #if os(iOS)
         detailLabel.textAlignment = .center
-        detailLabel.numberOfLines = 0
+        detailLabel.numberOfLines = 5
         detailLabel.accessibilityIdentifier = "empty set detail label"
         #else
         detailLabel.alignment = .center
@@ -156,12 +157,9 @@ open class EmptyDataSetView: View {
     }
     
     internal var customView: View? {
-        willSet {
-            if let customView = customView {
-                customView.removeFromSuperview()
-            }
-        }
         didSet {
+            guard oldValue !== customView else { return }
+            oldValue?.removeFromSuperview()
             if let customView = customView {
                 customView.translatesAutoresizingMaskIntoConstraints = false
                 self.addSubview(customView)
@@ -169,7 +167,6 @@ open class EmptyDataSetView: View {
         }
     }
     
-    internal var fadeInOnDisplay = false
     internal var verticalOffset: CGFloat = 0
     
     internal var didTapContentViewHandle: (() -> Void)?
@@ -212,23 +209,23 @@ open class EmptyDataSetView: View {
 //            frame = CGRect(x: 0, y: 0, width: superviewBounds.width, height: superviewBounds.height)
 //        }
         
-        if fadeInOnDisplay {
-            UIView.animate(withDuration: 0.25) {
-                self.contentView.alpha = 1
-            }
-        } else {
-            contentView.alpha = 1
-        }
+//        if fadeInOnDisplay {
+//            UIView.animate(withDuration: 0.25) {
+//                self.contentView.alpha = 1
+//            }
+//        } else {
+//            contentView.alpha = 1
+//        }
     }
     #else
     open override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        if fadeInOnDisplay {
-            // TODO: set duration
-            contentView.animator().alphaValue = 1
-        } else {
-            contentView.alphaValue = 1
-        }
+//        if fadeInOnDisplay {
+//            // TODO: set duration
+//            contentView.animator().alphaValue = 1
+//        } else {
+//            contentView.alphaValue = 1
+//        }
     }
     #endif
     
@@ -287,43 +284,18 @@ open class EmptyDataSetView: View {
             item = self
         }
         
-        let centerXConstraint = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: item, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-        let centerYConstraint = NSLayoutConstraint(item: view, attribute: verticalAlignment.layoutConstraintAttribute, relatedBy: .equal, toItem: item, attribute: verticalAlignment.layoutConstraintAttribute, multiplier: 1.0, constant: 0.0) // setup verticalOffset
+        let centerXConstraint = NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal,
+                                                   toItem: item, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+        let centerYConstraint = NSLayoutConstraint(item: view, attribute: verticalAlignment.layoutConstraintAttribute, relatedBy: .equal,
+                                                   toItem: item, attribute: verticalAlignment.layoutConstraintAttribute, multiplier: 1.0, constant: verticalOffset)
 
         _constraints.append(contentsOf: [centerXConstraint, centerYConstraint])
         _constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|", options: [], metrics: nil, views: ["contentView": view]))
-        
-        // TODO: delete this code block
-        // When a custom offset is available, we adjust the vertical constraints' constants
-        if (verticalOffset != 0 && _constraints.count > 0) {
-            centerYConstraint.constant = verticalOffset
-        }
-        
-        
+                
         self.addConstraints(_constraints)
     }
     
-    //MARK: - Delegate Getters & Events (Private)
-    
-    private var shouldFadeIn: Bool {
-        return delegate?.emptyDataSetShouldFadeIn(self) ?? true
-    }
-    
-    private var shouldBeForcedToDisplay: Bool {
-        return delegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false
-    }
-    
-    private var isTouchAllowed: Bool {
-        return delegate?.emptyDataSetShouldAllowTouch(self) ?? true
-    }
-    
-    private var isScrollAllowed: Bool {
-        return delegate?.emptyDataSetShouldAllowScroll(self) ?? false
-    }
-    
-    private var isImageViewAnimateAllowed: Bool {
-        return delegate?.emptyDataSetShouldAnimateImageView(self) ?? false
-    }
+    // MARK: - Delegate Getters & Events (Private)
     
     private func willAppear() {
         delegate?.emptyDataSetWillAppear(self)
@@ -362,38 +334,28 @@ open class EmptyDataSetView: View {
     // MARK: - Reload APIs (Public)
     public func reloadEmptyDataSet(itemsCount: Int = 0) {
         let state = self.state ?? makeStateFromDataSource()
+        let customView = self.dataSource?.customView(self)
+        let shouldDisplay = itemsCount == 0 && self.delegate?.emptyDataSetShouldDisplay(self, with: state) ?? self.shouldDisplay
         
-        guard let state = state else {
+        if (state == nil && customView == nil) || shouldDisplay == false {
             invalidateIfNedded()
             return
         }
-        
-        let shouldDisplay = delegate?.emptyDataSetShouldDisplay(self) ?? shouldDisplay
-       
-        guard (shouldDisplay && itemsCount == 0) || shouldBeForcedToDisplay else {
-            invalidateIfNedded()
-            return
-        }
-        
-        // Notifies that the empty dataset view will appear
-        willAppear()
-        
-        // Configure empty dataset fade in display
-        fadeInOnDisplay = shouldFadeIn
         
         // Removing view resetting the view and its constraints it very important to guarantee a good state
         // If a non-nil custom view is available, let's configure it instead
         prepareForReuse()
         
-        if let customView = dataSource?.customView(self) {
+        // Notifies that the empty dataset view will appear
+        willAppear()
+        
+        if let customView = customView {
             self.contentView.isHidden = true
             self.customView = customView
         } else {
             self.contentView.isHidden = false
                             
-            contentView.spacing = dataSource?.verticalSpacing(self) ?? 11
-            // Configure offset
-            verticalOffset = dataSource?.verticalOffset(self) ?? 0
+            contentView.spacing = dataSource?.verticalSpacing(self) ?? spacing
             
             setup(with: state)
             
@@ -401,37 +363,21 @@ open class EmptyDataSetView: View {
             if let image = dataSource?.buttonImage(self, for: .normal) {
                 buttonImage(image, for: .normal)
                 buttonImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
-            } else if let title = dataSource?.buttonTitle(self, for: .normal) {
-                buttonTitle(title, for: .normal)
-                buttonTitle(dataSource?.buttonTitle(self, for: .highlighted), for: .highlighted)
-//                buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .normal), for: .normal)
-//                buttonBackgroundImage(dataSource?.buttonBackgroundImage(self, for: .highlighted), for: .highlighted)
             }
             #endif
         }
+        
+        verticalOffset = dataSource?.verticalOffset(self) ?? 0
         
         isHidden = false
         
         #if os(iOS)
         // Configure the empty dataset view
-        backgroundColor = dataSource?.backgroundColor(self)
         clipsToBounds = true
-        
-        // Configure empty dataset userInteraction permission
-        isUserInteractionEnabled = isTouchAllowed
-        
+
         // Configure scroll permission
         if let scrollView = superview as? UIScrollView {
-            scrollView.isScrollEnabled = isScrollAllowed
-        }
-        
-        // Configure image view animation
-        if self.isImageViewAnimateAllowed {
-            if let animation = dataSource?.imageAnimation(self) {
-                imageView.layer.add(animation, forKey: nil)
-            }
-        } else {
-            imageView.layer.removeAllAnimations()
+            scrollView.isScrollEnabled = self.delegate?.emptyDataSetShouldAllowScroll(self) ?? false
         }
         #endif
         
@@ -441,6 +387,12 @@ open class EmptyDataSetView: View {
         
         // Notifies that the empty dataset view did appear
         didAppear()
+    }
+    
+    // MARK: -
+    
+    public func reloadEmptyDataSet(with state: EmptyDataSetViewState?, addionalConfiguration: ((Self) -> Void)?) {
+        
     }
     
     func setup(with state: EmptyDataSetViewState?) {
@@ -502,7 +454,7 @@ open class EmptyDataSetView: View {
         }
     }
     
-    func invalidate() {
+    public func invalidate() {
         willDisappear()
         prepareForReuse()
         currentlyDisplayedState = nil
