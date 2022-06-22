@@ -173,7 +173,9 @@ extension UIScrollView {
     @objc private func eds_swizzledlayoutSubviews() {
         eds_swizzledlayoutSubviews()
         
-        emptyDataSetView?.frame = bounds
+        guard let emptyDataSetView = emptyDataSetView else { return }
+        sendSubviewToBack(emptyDataSetView)
+        emptyDataSetView.frame = bounds
     }
     
     private static let swizzleLayoutSubviews: () = {
