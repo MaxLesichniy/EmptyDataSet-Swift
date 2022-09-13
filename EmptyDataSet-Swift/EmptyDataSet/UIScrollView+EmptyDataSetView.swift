@@ -64,6 +64,13 @@ extension UIScrollView {
         }
     }
     
+    public func removeEmptyDataSetView() {
+        invalidate()
+        emptyDataSetDelegate = nil
+        emptyDataSetSource = nil
+        emptyDataSetView = nil
+    }
+    
     private func prepareEmptyDataSetView() {
         let view = EmptyDataSetView(frame: bounds)
         view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -80,6 +87,7 @@ extension UIScrollView {
         
         UIScrollView.swizzleReloadData
         UIScrollView.swizzleLayoutSubviews
+//        UIScrollView.swizzleDidMoveToWindow
         UIScrollView.swizzleBatchUpdate
         if self is UITableView {
             UIScrollView.swizzleEndUpdates
@@ -170,19 +178,30 @@ extension UIScrollView {
         }
     }
     
-    @objc private func eds_swizzledlayoutSubviews() {
-        eds_swizzledlayoutSubviews()
+    @objc private func eds_swizzledLayoutSubviews() {
+        eds_swizzledLayoutSubviews()
         
         guard let emptyDataSetView = emptyDataSetView else { return }
         sendSubviewToBack(emptyDataSetView)
         emptyDataSetView.frame = bounds
     }
     
+//    @objc private func eds_swizzledDidMoveToWindow() {
+//        eds_swizzledDidMoveToWindow()
+//        reloadEmptyDataSet()
+//    }
+    
     private static let swizzleLayoutSubviews: () = {
         swizzleMethod(for: UIScrollView.self,
                       originalSelector: #selector(UIScrollView.layoutSubviews),
-                      swizzledSelector: #selector(UIScrollView.eds_swizzledlayoutSubviews))
+                      swizzledSelector: #selector(UIScrollView.eds_swizzledLayoutSubviews))
     }()
+    
+//    private static let swizzleDidMoveToWindow: () = {
+//        swizzleMethod(for: UIScrollView.self,
+//                      originalSelector: #selector(UIScrollView.didMoveToWindow),
+//                      swizzledSelector: #selector(UIScrollView.eds_swizzledDidMoveToWindow))
+//    }()
     
     private static let swizzleReloadData: () = {
         swizzleMethod(for: UITableView.self,

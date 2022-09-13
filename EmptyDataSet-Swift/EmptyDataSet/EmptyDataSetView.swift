@@ -175,8 +175,11 @@ open class EmptyDataSetView: View {
     internal var didAppearHandle: (() -> Void)?
     internal var willDisappearHandle: (() -> Void)?
     internal var didDisappearHandle: (() -> Void)?
-    
+
+    private var originalIsScrollEnabled: Bool = true
     private var _constraints: [NSLayoutConstraint] = []
+    
+    // MARK: - Init
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -377,7 +380,8 @@ open class EmptyDataSetView: View {
 
         // Configure scroll permission
         if let scrollView = superview as? UIScrollView {
-            scrollView.isScrollEnabled = self.delegate?.emptyDataSetShouldAllowScroll(self) ?? false
+            originalIsScrollEnabled = scrollView.isScrollEnabled
+            scrollView.isScrollEnabled = delegate?.emptyDataSetShouldAllowScroll(self) ?? false
         }
         #endif
         
@@ -446,6 +450,14 @@ open class EmptyDataSetView: View {
         state.image = dataSource.image(self)
         state.buttonTitle = dataSource.buttonTitle(self, for: .normal)?.string
         return state
+    }
+    
+    public func setNeedsUpdateVerticalOffset() {
+        let oldOffset = verticalOffset
+        verticalOffset = dataSource?.verticalOffset(self) ?? 0
+        if verticalOffset != oldOffset {
+            setNeedsUpdateConstraints()
+        }
     }
     
     func invalidateIfNedded() {
