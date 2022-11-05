@@ -214,7 +214,7 @@ extension UIScrollView {
     }()
     
     private static let swizzleBatchUpdate: () = {
-        if #available(iOS 11.0, *) {
+        if #available(iOS 11.0, tvOS 11.0, *) {
             swizzleMethod(for: UITableView.self, originalSelector: #selector(UITableView.performBatchUpdates(_:completion:)),
                           swizzledSelector: #selector(UIScrollView.eds_swizzledTableViewPerformBatchUpdates(_:completion:)))
         }

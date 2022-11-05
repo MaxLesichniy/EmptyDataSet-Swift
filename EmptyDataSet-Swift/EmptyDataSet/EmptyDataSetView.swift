@@ -27,7 +27,7 @@ open class EmptyDataSetView: View {
     public internal(set) lazy var contentView: StackView = {
         let contentView = StackView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         contentView.axis = .vertical
         contentView.alignment = .center
         contentView.backgroundColor = .clear
@@ -46,7 +46,7 @@ open class EmptyDataSetView: View {
     public internal(set) lazy var imageView: ImageView = {
         let imageView = ImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
         imageView.accessibilityIdentifier = "empty set background image"
@@ -62,7 +62,7 @@ open class EmptyDataSetView: View {
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.font = .systemFont(ofSize: 27.0)
         titleLabel.textColor = .init(white: 0.6, alpha: 1.0)
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 2
         titleLabel.accessibilityIdentifier = "empty set title"
@@ -82,7 +82,7 @@ open class EmptyDataSetView: View {
         detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.font = .systemFont(ofSize: 17.0)
         detailLabel.textColor = .init(white: 0.6, alpha: 1.0)
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         detailLabel.textAlignment = .center
         detailLabel.numberOfLines = 5
         detailLabel.accessibilityIdentifier = "empty set detail label"
@@ -99,7 +99,7 @@ open class EmptyDataSetView: View {
     public internal(set) lazy var button: Button = { [unowned self] in
         let button: Button
         let contentEdgeInsets = EdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         button = UIButton(type: .custom)
         button.contentEdgeInsets = contentEdgeInsets
         button.accessibilityIdentifier = "empty set button"
@@ -142,7 +142,7 @@ open class EmptyDataSetView: View {
     }
     
     internal var canShowButton: Bool {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         if let attributedTitle = button.attributedTitle(for: .normal) {
             return attributedTitle.length > 0
         } else if let title = button.title(for: .normal) {
@@ -198,13 +198,13 @@ open class EmptyDataSetView: View {
         contentView.addArrangedSubview(detailLabel)
         contentView.addArrangedSubview(button)
 
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
         addGestureRecognizer(tapGestureRecognizer)
         #endif
     }
     
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         
@@ -326,7 +326,7 @@ open class EmptyDataSetView: View {
         didTapDataButtonHandle?()
     }
     
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     @objc private func didTapContentViewHandler(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         delegate?.emptyDataSet(self, didTapView: view)
@@ -427,7 +427,7 @@ open class EmptyDataSetView: View {
         imageView.isHidden = !canShowImage
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     func setupButtonTitle(with buttonTitle: String?, for state: UIControl.State) {
         button.setTitle(buttonTitle, for: state)
         button.isHidden = !canShowButton
@@ -471,7 +471,7 @@ open class EmptyDataSetView: View {
         prepareForReuse()
         currentlyDisplayedState = nil
         isHidden = true
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         if let scrollView = superview as? UIScrollView {
             scrollView.isScrollEnabled = true
         }
