@@ -14,6 +14,7 @@ public struct EmptyDataSetViewState: Hashable {
     public var details: String?
     public var attributedDetails: NSAttributedString?
     public var image: Image?
+    public var additionalButtons: [Button]?
     public var buttonTitle: String?
     public var buttonHandler: (() -> Void)?
     
@@ -40,12 +41,14 @@ public struct EmptyDataSetViewState: Hashable {
     public init(title: String? = nil, attributedTitle: NSAttributedString? = nil,
                 details: String? = nil, attributedDetails: NSAttributedString? = nil,
                 image: Image? = nil,
+                additionalButtons: [Button]? = nil,
                 buttonTitle: String? = nil, buttonHandler: (() -> Void)? = nil) {
         self.title = title
         self.attributedTitle = attributedTitle
         self.details = details
         self.attributedDetails = attributedDetails
         self.image = image
+        self.additionalButtons = additionalButtons
         self.buttonTitle = buttonTitle
         self.buttonHandler = buttonHandler
     }
@@ -56,6 +59,7 @@ public struct EmptyDataSetViewState: Hashable {
         self.details = base.details
         self.attributedDetails = base.attributedDetails
         self.image = base.image
+        self.additionalButtons = base.additionalButtons
         self.buttonTitle = base.buttonTitle
         self.buttonHandler = base.buttonHandler
     }
@@ -66,6 +70,7 @@ public struct EmptyDataSetViewState: Hashable {
         hasher.combine(details)
         hasher.combine(attributedDetails)
         hasher.combine(image)
+        hasher.combine(additionalButtons)
         hasher.combine(buttonTitle)
     }
     

@@ -104,6 +104,11 @@ open class EmptyDataSetView: View {
         button.contentEdgeInsets = contentEdgeInsets
         button.accessibilityIdentifier = "empty set button"
         button.addTarget(self, action: #selector(didTapDataButtonHandler(_:)), for: .touchUpInside)
+//        #if os(iOS)
+//        if #available(iOS 15, macCatalyst 15, *) {
+//            button.preferredBehavioralStyle = .pad
+//        }
+//        #endif
         #else
         button = NSButton()
         button.target = self
@@ -121,6 +126,8 @@ open class EmptyDataSetView: View {
         }
     }
     
+    open internal(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
+
     internal var currentlyDisplayedState: EmptyDataSetViewState?
     
     internal var canShowImage: Bool {
@@ -178,6 +185,7 @@ open class EmptyDataSetView: View {
 
     private var originalIsScrollEnabled: Bool = true
     private var _constraints: [NSLayoutConstraint] = []
+    private var additionalButtons: [Button]?
     
     // MARK: - Init
     
@@ -199,7 +207,6 @@ open class EmptyDataSetView: View {
         contentView.addArrangedSubview(button)
 
         #if os(iOS) || os(tvOS)
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
         addGestureRecognizer(tapGestureRecognizer)
         #endif
     }
@@ -255,6 +262,7 @@ open class EmptyDataSetView: View {
         setupTitleLabel(with: nil)
         setupDetailsLabel(with: nil)
         setupImageView(with: nil)
+        removeAdditionalButtons()
         
         #if canImport(UIKit)
         let buttonStates: [UIControl.State] = [.highlighted, .normal]
@@ -407,6 +415,7 @@ open class EmptyDataSetView: View {
         setupImageView(with: state?.image)
         #if os(iOS)
         setupButtonTitle(with: state?.buttonTitle, for: .normal)
+        setupAdditionalButtons(with: state?.additionalButtons)
         #endif
         
         currentlyDisplayedState = state
@@ -436,6 +445,24 @@ open class EmptyDataSetView: View {
     func setupButtonTitle(with buttonTitle: NSAttributedString?, for state: UIControl.State) {
         button.setAttributedTitle(buttonTitle, for: state)
         button.isHidden = !canShowButton
+    }
+    
+    func setupAdditionalButtons(with buttons: [Button]?) {
+        if let buttons, let index = contentView.arrangedSubviews.firstIndex(of: button) {
+            for b in buttons.reversed() {
+                contentView.insertArrangedSubview(b, at: index + 1)
+            }
+        }
+        self.additionalButtons = buttons
+    }
+    
+    func removeAdditionalButtons() {
+        if let additionalButtons {
+            for b in additionalButtons {
+                contentView.removeArrangedSubview(b)
+                b.removeFromSuperview()
+            }
+        }
     }
     #endif
     
