@@ -9,8 +9,21 @@
 import Foundation
 
 extension EmptyDataSetView {
+
+    @discardableResult
+    public func applyConfiguration(_ configurationHandler: @escaping (EmptyDataSetView) -> Void) -> Self {
+        if let oldConfigure = configure {
+            configure = { emptyDataSetView in
+                oldConfigure(emptyDataSetView)
+                configurationHandler(emptyDataSetView)
+            }
+        } else {
+            configure = configurationHandler
+        }
+        return self
+    }
     
-    //MARK: - Data Source
+    // MARK: - Data Source
     
     /// Asks the data source for the title of the dataset.
     /// The dataset uses a fixed font style by default, if no attributes are set. If you want a different font style, return a attributed string.

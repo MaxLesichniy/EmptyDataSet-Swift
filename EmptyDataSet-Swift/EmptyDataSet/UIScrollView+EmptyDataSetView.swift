@@ -135,7 +135,7 @@ extension UIScrollView {
     
     public func reloadEmptyDataSet() {
         emptyDataSetView?.frame = bounds
-        emptyDataSetView?.reloadEmptyDataSet(itemsCount: itemsCount)
+        emptyDataSetView?.reload(with: itemsCount)
     }
     
     //MARK: - Method Swizzling

@@ -29,7 +29,7 @@ open class EmptyDataSetView: View {
         didSet {
             guard state != oldValue,
                   state != currentlyDisplayedState else { return }
-            reloadEmptyDataSet()
+            reload()
         }
     }
     
@@ -186,14 +186,14 @@ open class EmptyDataSetView: View {
     }
     
     internal var verticalOffset: CGFloat = 0
-    
     internal var didTapContentViewHandle: (() -> Void)?
     internal var didTapDataButtonHandle: (() -> Void)?
     internal var willAppearHandle: (() -> Void)?
     internal var didAppearHandle: (() -> Void)?
     internal var willDisappearHandle: (() -> Void)?
     internal var didDisappearHandle: (() -> Void)?
-
+    internal var needsReloadWithItemsCount: Int?
+    
     private var originalIsScrollEnabled: Bool = true
     private var _constraints: [NSLayoutConstraint] = []
     private var additionalButtons: [Button]?
@@ -289,6 +289,14 @@ open class EmptyDataSetView: View {
         currentlyDisplayedState = nil
     }
     
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if let itemsCount = needsReloadWithItemsCount {
+            performReload(with: itemsCount)
+        }
+    }
+    
     open override func updateConstraints() {
         super.updateConstraints()
         
@@ -355,7 +363,20 @@ open class EmptyDataSetView: View {
     #endif
     
     // MARK: - Reload APIs (Public)
+    public func reload(with itemsCount: Int = 0) {
+        os_log(.debug, log: .emptyDataSet, "Need reload with items: \(itemsCount)")
+        needsReloadWithItemsCount = itemsCount
+        setNeedsLayout()
+    }
+    
+    @available(*, deprecated, renamed: "reload(with:)")
     public func reloadEmptyDataSet(itemsCount: Int = 0) {
+        performReload(with: itemsCount)
+    }
+    
+    func performReload(with itemsCount: Int = 0) {
+        os_log(.debug, log: .emptyDataSet, "Perform reload with items: \(itemsCount)")
+        
         let state = self.state ?? makeStateFromDataSource()
         let customView = self.dataSource?.customView(self)
         let shouldDisplay = itemsCount == 0 && self.delegate?.emptyDataSetShouldDisplay(self, with: state) ?? self.shouldDisplay
@@ -411,13 +432,15 @@ open class EmptyDataSetView: View {
         
         // Notifies that the empty dataset view did appear
         didAppear()
+        
+        needsReloadWithItemsCount = nil
     }
     
     // MARK: -
     
-    public func reloadEmptyDataSet(with state: EmptyDataSetViewState?, addionalConfiguration: ((Self) -> Void)?) {
-        
-    }
+//    public func reloadEmptyDataSet(with state: EmptyDataSetViewState?, addionalConfiguration: ((Self) -> Void)?) {
+//        
+//    }
     
     func setup(with state: EmptyDataSetViewState?) {
         let attributedTitle = state?.attributedTitle ?? state?.title.map { NSAttributedString(string: $0) }
