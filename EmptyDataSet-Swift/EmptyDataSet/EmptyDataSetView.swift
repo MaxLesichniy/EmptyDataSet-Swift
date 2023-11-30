@@ -6,7 +6,16 @@
 //  Copyright © 2017年 Xiaoye. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
+import os.log
+
+extension OSLog {
+    static let emptyDataSet = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "", category: "EmptyDataSet")
+}
 
 open class EmptyDataSetView: View {
     
@@ -119,14 +128,16 @@ open class EmptyDataSetView: View {
         return button
     }()
     
-    open var textColor: UIColor? {
+    open var textColor: Color? {
         didSet {
             titleLabel.textColor = textColor
             detailLabel.textColor = textColor
         }
     }
     
+    #if os(iOS) || os(tvOS)
     open internal(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
+    #endif
 
     internal var currentlyDisplayedState: EmptyDataSetViewState?
     
@@ -262,9 +273,10 @@ open class EmptyDataSetView: View {
         setupTitleLabel(with: nil)
         setupDetailsLabel(with: nil)
         setupImageView(with: nil)
+        
+        #if os(iOS) || os(tvOS)
         removeAdditionalButtons()
         
-        #if canImport(UIKit)
         let buttonStates: [UIControl.State] = [.highlighted, .normal]
         buttonStates.forEach {
             buttonTitle(nil, for: $0)
@@ -475,7 +487,9 @@ open class EmptyDataSetView: View {
         state.attributedTitle = dataSource.title(self)
         state.attributedDetails = dataSource.description(self)
         state.image = dataSource.image(self)
+        #if os(iOS) || os(tvOS)
         state.buttonTitle = dataSource.buttonTitle(self, for: .normal)?.string
+        #endif
         return state
     }
     

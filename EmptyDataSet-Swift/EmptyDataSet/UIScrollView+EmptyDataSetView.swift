@@ -9,11 +9,11 @@
 #if canImport(UIKit)
 import UIKit
 
-private var kEmptyDataSetView = "emptyDataSetView"
+private var kEmptyDataSetView = 0
 
 extension UIScrollView {
     
-    //MARK: - Public Property
+    // MARK: - Public Property
     
     public var emptyDataSetSource: EmptyDataSetSource? {
         get {
