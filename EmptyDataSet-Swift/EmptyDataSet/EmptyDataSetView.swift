@@ -289,6 +289,7 @@ open class EmptyDataSetView: View {
         currentlyDisplayedState = nil
     }
     
+    #if os(iOS) || os(tvOS)
     open override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -296,6 +297,15 @@ open class EmptyDataSetView: View {
             performReload(with: itemsCount)
         }
     }
+    #else
+    open override func layout() {
+        super.layout()
+        
+        if let itemsCount = needsReloadWithItemsCount {
+            performReload(with: itemsCount)
+        }
+    }
+    #endif
     
     open override func updateConstraints() {
         super.updateConstraints()
@@ -364,9 +374,13 @@ open class EmptyDataSetView: View {
     
     // MARK: - Reload APIs (Public)
     public func reload(with itemsCount: Int = 0) {
-        os_log(.debug, log: .emptyDataSet, "Need reload with items: \(itemsCount)")
+//        os_log(.debug, log: .emptyDataSet, "Need reload with items: \(itemsCount)")
         needsReloadWithItemsCount = itemsCount
+        #if os(iOS) || os(tvOS)
         setNeedsLayout()
+        #else
+        needsLayout = true
+        #endif
     }
     
     @available(*, deprecated, renamed: "reload(with:)")
@@ -375,7 +389,7 @@ open class EmptyDataSetView: View {
     }
     
     func performReload(with itemsCount: Int = 0) {
-        os_log(.debug, log: .emptyDataSet, "Perform reload with items: \(itemsCount)")
+//        os_log(.debug, log: .emptyDataSet, "Perform reload with items: \(itemsCount)")
         
         let state = self.state ?? makeStateFromDataSource()
         let customView = self.dataSource?.customView(self)
