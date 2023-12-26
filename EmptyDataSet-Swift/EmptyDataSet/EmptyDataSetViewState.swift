@@ -19,20 +19,20 @@ public struct EmptyDataSetViewState: Hashable {
     public var buttonHandler: (() -> Void)?
     
     public var hasTitle: Bool {
-        if let str = self.title, !str.isEmpty {
+        if let str = title, !str.isEmpty {
             return true
         }
-        if let str = self.attributedTitle?.string, !str.isEmpty {
+        if let str = attributedTitle?.string, !str.isEmpty {
             return true
         }
         return false
     }
     
     public var hasDetails: Bool {
-        if let str = self.title, !str.isEmpty {
+        if let str = details, !str.isEmpty {
             return true
         }
-        if let str = self.attributedTitle?.string, !str.isEmpty {
+        if let str = attributedDetails?.string, !str.isEmpty {
             return true
         }
         return false
