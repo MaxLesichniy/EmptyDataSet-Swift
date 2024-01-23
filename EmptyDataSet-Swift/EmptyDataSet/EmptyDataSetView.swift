@@ -440,14 +440,14 @@ open class EmptyDataSetView: View {
         }
         #endif
         
+        needsReloadWithItemsCount = nil
+
         configure?(self)
         
         setNeedsUpdateConstraints()
         
         // Notifies that the empty dataset view did appear
         didAppear()
-        
-        needsReloadWithItemsCount = nil
     }
     
     // MARK: -
