@@ -8,14 +8,14 @@
 import Foundation
 #if os(macOS)
 import AppKit
-public typealias Image = NSImage
-public typealias Color = NSColor
-public typealias View = NSView
-public typealias StackView = NSStackView
-public typealias ImageView = NSImageView
-public typealias Label = NSTextField
-public typealias Button = NSButton
-public typealias EdgeInsets = NSEdgeInsets
+public typealias PlatformImage = NSImage
+public typealias PlatformColor = NSColor
+public typealias PlatformView = NSView
+public typealias PlatformStackView = NSStackView
+public typealias PlatformImageView = NSImageView
+public typealias PlatformLabel = NSTextField
+public typealias PlatformButton = NSButton
+public typealias PlatformEdgeInsets = NSEdgeInsets
 
 extension NSTextField {
     
@@ -36,17 +36,17 @@ extension NSView {
 
 #else
 import UIKit
-public typealias Image = UIImage
-public typealias Color = UIColor
-public typealias View = UIView
-public typealias StackView = UIStackView
-public typealias ImageView = UIImageView
-public typealias Label = UILabel
-public typealias Button = UIButton
-public typealias EdgeInsets = UIEdgeInsets
+public typealias PlatformImage = UIImage
+public typealias PlatformColor = UIColor
+public typealias PlatformView = UIView
+public typealias PlatformStackView = UIStackView
+public typealias PlatformImageView = UIImageView
+public typealias PlatformLabel = UILabel
+public typealias PlatformButton = UIButton
+public typealias PlatformEdgeInsets = UIEdgeInsets
 #endif
 
-extension View {
+extension PlatformView {
     
     class func swizzleMethod(for aClass: AnyClass, originalSelector: Selector, swizzledSelector: Selector) {
         let originalMethod = class_getInstanceMethod(aClass, originalSelector)

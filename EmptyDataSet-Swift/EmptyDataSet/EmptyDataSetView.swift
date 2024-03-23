@@ -17,7 +17,7 @@ extension OSLog {
     static let emptyDataSet = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "", category: "EmptyDataSet")
 }
 
-open class EmptyDataSetView: View {
+open class EmptyDataSetView: PlatformView {
     
     public weak var dataSource: EmptyDataSetSource?
     public weak var delegate: EmptyDataSetDelegate?
@@ -33,15 +33,15 @@ open class EmptyDataSetView: View {
         }
     }
     
-    public internal(set) lazy var contentView: StackView = {
-        let contentView = StackView()
+    public internal(set) lazy var contentView: PlatformStackView = {
+        let contentView = PlatformStackView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
         #if os(iOS) || os(tvOS)
         contentView.axis = .vertical
         contentView.alignment = .center
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = true
-        contentView.layoutMargins = EdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        contentView.layoutMargins = PlatformEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         contentView.isLayoutMarginsRelativeArrangement = true
         #else
         contentView.orientation = .vertical
@@ -52,8 +52,8 @@ open class EmptyDataSetView: View {
         return contentView
     }()
     
-    public internal(set) lazy var imageView: ImageView = {
-        let imageView = ImageView()
+    public internal(set) lazy var imageView: PlatformImageView = {
+        let imageView = PlatformImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         #if os(iOS) || os(tvOS)
         imageView.backgroundColor = .clear
@@ -65,8 +65,8 @@ open class EmptyDataSetView: View {
         return imageView
     }()
     
-    public internal(set) lazy var titleLabel: Label = {
-        let titleLabel = Label()
+    public internal(set) lazy var titleLabel: PlatformLabel = {
+        let titleLabel = PlatformLabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.font = .systemFont(ofSize: 27.0)
@@ -85,8 +85,8 @@ open class EmptyDataSetView: View {
         return titleLabel
     }()
     
-    public internal(set) lazy var detailLabel: Label = {
-        let detailLabel = Label()
+    public internal(set) lazy var detailLabel: PlatformLabel = {
+        let detailLabel = PlatformLabel()
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.font = .systemFont(ofSize: 17.0)
@@ -105,9 +105,9 @@ open class EmptyDataSetView: View {
         return detailLabel
     }()
     
-    public internal(set) lazy var button: Button = { [unowned self] in
-        let button: Button
-        let contentEdgeInsets = EdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+    public internal(set) lazy var button: PlatformButton = { [unowned self] in
+        let button: PlatformButton
+        let contentEdgeInsets = PlatformEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         #if os(iOS) || os(tvOS)
         button = UIButton(type: .custom)
         button.contentEdgeInsets = contentEdgeInsets
@@ -128,7 +128,7 @@ open class EmptyDataSetView: View {
         return button
     }()
     
-    open var textColor: Color? {
+    open var textColor: PlatformColor? {
         didSet {
             titleLabel.textColor = textColor
             detailLabel.textColor = textColor
@@ -174,7 +174,7 @@ open class EmptyDataSetView: View {
         #endif
     }
     
-    internal var customView: View? {
+    internal var customView: PlatformView? {
         didSet {
             guard oldValue !== customView else { return }
             oldValue?.removeFromSuperview()
@@ -196,7 +196,7 @@ open class EmptyDataSetView: View {
     
     private var originalIsScrollEnabled: Bool = true
     private var _constraints: [NSLayoutConstraint] = []
-    private var additionalButtons: [Button]?
+    private var additionalButtons: [PlatformButton]?
     
     // MARK: - Init
     
@@ -250,7 +250,7 @@ open class EmptyDataSetView: View {
     }
     #endif
     
-    public func setDetailLabel(_ label: Label) {
+    public func setDetailLabel(_ label: PlatformLabel) {
         // FIXME: contentView.addArrangedSubview(detailLabel)
         self.detailLabel = label
         self.contentView.addSubview(label)
@@ -358,7 +358,7 @@ open class EmptyDataSetView: View {
         didDisappearHandle?()
     }
     
-    @objc private func didTapDataButtonHandler(_ sender: Button) {
+    @objc private func didTapDataButtonHandler(_ sender: PlatformButton) {
         delegate?.emptyDataSet(self, didTapButton: sender)
         currentlyDisplayedState?.buttonHandler?()
         didTapDataButtonHandle?()
@@ -480,7 +480,7 @@ open class EmptyDataSetView: View {
         detailLabel.isHidden = !canShowDetail
     }
 
-    func setupImageView(with image: Image?) {
+    func setupImageView(with image: PlatformImage?) {
         imageView.image = image
         imageView.isHidden = !canShowImage
     }
@@ -496,7 +496,7 @@ open class EmptyDataSetView: View {
         button.isHidden = !canShowButton
     }
     
-    func setupAdditionalButtons(with buttons: [Button]?) {
+    func setupAdditionalButtons(with buttons: [PlatformButton]?) {
         if let buttons, let index = contentView.arrangedSubviews.firstIndex(of: button) {
             for b in buttons.reversed() {
                 contentView.insertArrangedSubview(b, at: index + 1)

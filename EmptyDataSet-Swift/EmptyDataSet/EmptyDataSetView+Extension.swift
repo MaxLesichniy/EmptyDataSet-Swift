@@ -45,7 +45,7 @@ extension EmptyDataSetView {
     
     /// Asks the data source for the image of the dataset.
     @discardableResult
-    public func image(_ image: Image?) -> Self {
+    public func image(_ image: PlatformImage?) -> Self {
         imageView.image = image
         imageView.isHidden = !canShowImage
         return self
@@ -53,7 +53,7 @@ extension EmptyDataSetView {
     
     /// Asks the data source for a tint color of the image dataset. Default is nil.
     @discardableResult
-    public func imageTintColor(_ imageTintColor: Color?) -> Self {
+    public func imageTintColor(_ imageTintColor: PlatformColor?) -> Self {
         #if os(iOS) || os(tvOS)
         imageView.tintColor = imageTintColor
         let renderingMode: UIImage.RenderingMode = imageTintColor != nil ? .alwaysTemplate : .alwaysOriginal
@@ -104,7 +104,7 @@ extension EmptyDataSetView {
     
     /// Asks the data source for the background color of the dataset. Default is clear color.
     @discardableResult
-    public func dataSetBackgroundColor(_ backgroundColor: Color?) -> Self {
+    public func dataSetBackgroundColor(_ backgroundColor: PlatformColor?) -> Self {
         #if os(iOS) || os(tvOS)
         self.backgroundColor = backgroundColor
         #else
@@ -117,7 +117,7 @@ extension EmptyDataSetView {
     /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
     /// Returning a custom view will ignore -offsetForEmptyDataSet and -spaceHeightForEmptyDataSet configurations.
     @discardableResult
-    public func customView(_ customView: View?) -> Self {
+    public func customView(_ customView: PlatformView?) -> Self {
         self.customView = customView
         self.contentView.isHidden = customView != nil
         self.setNeedsUpdateConstraints()

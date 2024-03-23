@@ -33,14 +33,14 @@ public protocol EmptyDataSetDelegate: AnyObject {
     /// - Parameters:
     ///   - scrollView: scrollView A scrollView subclass informing the delegate.
     ///   - view: the view tapped by the user
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: View)
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: PlatformView)
 
     /// Tells the delegate that the action button was tapped.
     ///
     /// - Parameters:
     ///   - scrollView: A scrollView subclass informing the delegate.
     ///   - button: the button tapped by the user
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: Button)
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: PlatformButton)
 
     /// Tells the delegate that the empty data set will appear.
     ///
@@ -74,11 +74,11 @@ public extension EmptyDataSetDelegate {
         return false
     }
     
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: View) {
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapView view: PlatformView) {
         
     }
     
-    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: Button) {
+    func emptyDataSet(_ emptyDataSetView: EmptyDataSetView, didTapButton button: PlatformButton) {
         
     }
     

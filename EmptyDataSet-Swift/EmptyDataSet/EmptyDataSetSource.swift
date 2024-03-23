@@ -31,13 +31,13 @@ public protocol EmptyDataSetSource: AnyObject {
     ///
     /// - Parameter scrollView: A scrollView subclass informing the data source.
     /// - Returns: An image for the dataset.
-    func image(_ emptyDataSetView: EmptyDataSetView) -> Image?
+    func image(_ emptyDataSetView: EmptyDataSetView) -> PlatformImage?
     
     /// Asks the data source for a tint color of the image dataset. Default is nil.
     ///
     /// - Parameter scrollView: A scrollView subclass object informing the data source.
     /// - Returns: A color to tint the image of the dataset.
-    func imageTintColor(_ emptyDataSetView: EmptyDataSetView) -> Color?
+    func imageTintColor(_ emptyDataSetView: EmptyDataSetView) -> PlatformColor?
 
     /// Asks the data source for the image animation of the dataset.
     ///
@@ -78,7 +78,7 @@ public protocol EmptyDataSetSource: AnyObject {
     ///
     /// - Parameter scrollView: A scrollView subclass object informing the data source.
     /// - Returns: A color to be applied to the dataset background view.
-    func backgroundColor(_ emptyDataSetView: EmptyDataSetView) -> Color?
+    func backgroundColor(_ emptyDataSetView: EmptyDataSetView) -> PlatformColor?
 
     /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. Default is nil.
     /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
@@ -86,7 +86,7 @@ public protocol EmptyDataSetSource: AnyObject {
     ///
     /// - Parameter scrollView: A scrollView subclass object informing the delegate.
     /// - Returns: The custom view.
-    func customView(_ emptyDataSetView: EmptyDataSetView) -> View?
+    func customView(_ emptyDataSetView: EmptyDataSetView) -> PlatformView?
 
     /// Asks the data source for a offset for vertical alignment of the content. Default is 0.
     ///
@@ -116,11 +116,11 @@ public extension EmptyDataSetSource {
         return nil
     }
     
-    func image(_ emptyDataSetView: EmptyDataSetView) -> Image? {
+    func image(_ emptyDataSetView: EmptyDataSetView) -> PlatformImage? {
         return nil
     }
     
-    func imageTintColor(_ emptyDataSetView: EmptyDataSetView) -> Color? {
+    func imageTintColor(_ emptyDataSetView: EmptyDataSetView) -> PlatformColor? {
         return nil
     }
     
@@ -142,11 +142,11 @@ public extension EmptyDataSetSource {
     }
     #endif
     
-    func backgroundColor(_ emptyDataSetView: EmptyDataSetView) -> Color? {
+    func backgroundColor(_ emptyDataSetView: EmptyDataSetView) -> PlatformColor? {
         return nil
     }
     
-    func customView(_ emptyDataSetView: EmptyDataSetView) -> View? {
+    func customView(_ emptyDataSetView: EmptyDataSetView) -> PlatformView? {
         return nil
     }
     

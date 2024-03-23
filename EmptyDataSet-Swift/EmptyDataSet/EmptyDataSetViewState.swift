@@ -13,8 +13,8 @@ public struct EmptyDataSetViewState: Hashable {
     public var attributedTitle: NSAttributedString?
     public var details: String?
     public var attributedDetails: NSAttributedString?
-    public var image: Image?
-    public var additionalButtons: [Button]?
+    public var image: PlatformImage?
+    public var additionalButtons: [PlatformButton]?
     public var buttonTitle: String?
     public var buttonHandler: (() -> Void)?
     
@@ -40,8 +40,8 @@ public struct EmptyDataSetViewState: Hashable {
     
     public init(title: String? = nil, attributedTitle: NSAttributedString? = nil,
                 details: String? = nil, attributedDetails: NSAttributedString? = nil,
-                image: Image? = nil,
-                additionalButtons: [Button]? = nil,
+                image: PlatformImage? = nil,
+                additionalButtons: [PlatformButton]? = nil,
                 buttonTitle: String? = nil, buttonHandler: (() -> Void)? = nil) {
         self.title = title
         self.attributedTitle = attributedTitle
