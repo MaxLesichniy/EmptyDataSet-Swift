@@ -47,7 +47,7 @@ open class EmptyDataSetView: PlatformView {
         contentView.orientation = .vertical
         contentView.alignment = .centerX
         contentView.alphaValue = 0
-        contentView.edgeInsets = EdgeInsets(top: 36, left: 36, bottom: 36, right: 36)
+        contentView.edgeInsets = PlatformEdgeInsets(top: 36, left: 36, bottom: 36, right: 36)
         #endif
         return contentView
     }()
@@ -407,7 +407,7 @@ open class EmptyDataSetView: PlatformView {
         // Notifies that the empty dataset view will appear
         willAppear()
         
-        if let customView = customView {
+        if let customView {
             self.contentView.isHidden = true
             self.customView = customView
         } else {

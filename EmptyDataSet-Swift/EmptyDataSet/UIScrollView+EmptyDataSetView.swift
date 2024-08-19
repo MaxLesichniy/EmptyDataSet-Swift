@@ -140,8 +140,8 @@ extension UIScrollView {
     
     //MARK: - Method Swizzling
     
-    @objc private func eds_swizzledTabbleViewReloadData() {
-        eds_swizzledTabbleViewReloadData()
+    @objc private func eds_swizzledTableViewReloadData() {
+        eds_swizzledTableViewReloadData()
         reloadEmptyDataSet()
     }
     
@@ -206,7 +206,7 @@ extension UIScrollView {
     private static let swizzleReloadData: () = {
         swizzleMethod(for: UITableView.self,
                       originalSelector: #selector(UITableView.reloadData),
-                      swizzledSelector: #selector(UIScrollView.eds_swizzledTabbleViewReloadData))
+                      swizzledSelector: #selector(UIScrollView.eds_swizzledTableViewReloadData))
         
         swizzleMethod(for: UICollectionView.self,
                       originalSelector: #selector(UICollectionView.reloadData),
