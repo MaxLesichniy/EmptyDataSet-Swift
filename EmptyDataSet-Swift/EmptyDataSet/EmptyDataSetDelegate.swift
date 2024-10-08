@@ -13,6 +13,7 @@ import Foundation
 /// @discussion The delegate can adopt the DZNEmptyDataSetDelegate protocol. The delegate is not retained. All delegate methods are optional.
 ///
 /// @discussion All delegate methods are optional. Use this delegate for receiving action callbacks.
+@MainActor
 public protocol EmptyDataSetDelegate: AnyObject {
 
     /// Asks the delegate to know if the empty dataset should be rendered and displayed. Default is true.

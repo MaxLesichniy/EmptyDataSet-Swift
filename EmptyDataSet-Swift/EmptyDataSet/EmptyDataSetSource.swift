@@ -10,6 +10,7 @@ import Foundation
 
 /// The object that acts as the data source of the empty datasets.
 /// @discussion The data source must adopt the DZNEmptyDataSetSource protocol. The data source is not retained. All data source methods are optional.
+@MainActor
 public protocol EmptyDataSetSource: AnyObject {
     
     func emptyDataSetViewState(_ emptyDataSetView: EmptyDataSetView) -> EmptyDataSetViewState?

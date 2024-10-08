@@ -10,9 +10,10 @@ import Foundation
 
 extension EmptyDataSetView {
 
+    // TODO: - override options
     @discardableResult
-    public func applyConfiguration(_ configurationHandler: @escaping (EmptyDataSetView) -> Void) -> Self {
-        if let oldConfigure = configure {
+    public func applyConfiguration(/*override: Bool = false,*/ _ configurationHandler: @escaping (EmptyDataSetView) -> Void) -> Self {
+        if let oldConfigure = configure/*, override == false*/ {
             configure = { emptyDataSetView in
                 oldConfigure(emptyDataSetView)
                 configurationHandler(emptyDataSetView)
