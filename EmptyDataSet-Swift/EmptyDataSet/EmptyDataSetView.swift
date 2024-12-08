@@ -112,7 +112,7 @@ open class EmptyDataSetView: PlatformView {
         button = UIButton(type: .custom)
         button.contentEdgeInsets = contentEdgeInsets
         button.accessibilityIdentifier = "empty set button"
-        button.addTarget(self, action: #selector(didTapDataButtonHandler(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapDataButtonHandler(_:)), for: .primaryActionTriggered)
 //        #if os(iOS)
 //        if #available(iOS 15, macCatalyst 15, *) {
 //            button.preferredBehavioralStyle = .pad
