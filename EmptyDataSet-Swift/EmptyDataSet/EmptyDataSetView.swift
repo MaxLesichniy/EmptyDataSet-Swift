@@ -36,7 +36,7 @@ open class EmptyDataSetView: PlatformView {
     public internal(set) lazy var contentView: PlatformStackView = {
         let contentView = PlatformStackView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         contentView.axis = .vertical
         contentView.alignment = .center
         contentView.backgroundColor = .clear
@@ -55,7 +55,7 @@ open class EmptyDataSetView: PlatformView {
     public internal(set) lazy var imageView: PlatformImageView = {
         let imageView = PlatformImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
         imageView.accessibilityIdentifier = "empty set background image"
@@ -71,7 +71,7 @@ open class EmptyDataSetView: PlatformView {
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.font = .systemFont(ofSize: 27.0)
         titleLabel.textColor = .init(white: 0.6, alpha: 1.0)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 2
         titleLabel.accessibilityIdentifier = "empty set title"
@@ -91,7 +91,7 @@ open class EmptyDataSetView: PlatformView {
         detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.font = .systemFont(ofSize: 17.0)
         detailLabel.textColor = .init(white: 0.6, alpha: 1.0)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         detailLabel.textAlignment = .center
         detailLabel.numberOfLines = 5
         detailLabel.accessibilityIdentifier = "empty set detail label"
@@ -108,7 +108,7 @@ open class EmptyDataSetView: PlatformView {
     public internal(set) lazy var button: PlatformButton = { [unowned self] in
         let button: PlatformButton
         let contentEdgeInsets = PlatformEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         button = UIButton(type: .custom)
         button.contentEdgeInsets = contentEdgeInsets
         button.accessibilityIdentifier = "empty set button"
@@ -135,7 +135,7 @@ open class EmptyDataSetView: PlatformView {
         }
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     open internal(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapContentViewHandler(_:)))
     #endif
 
@@ -160,7 +160,7 @@ open class EmptyDataSetView: PlatformView {
     }
     
     internal var canShowButton: Bool {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         if let attributedTitle = button.attributedTitle(for: .normal) {
             return attributedTitle.length > 0
         } else if let title = button.title(for: .normal) {
@@ -217,12 +217,12 @@ open class EmptyDataSetView: PlatformView {
         contentView.addArrangedSubview(detailLabel)
         contentView.addArrangedSubview(button)
 
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         addGestureRecognizer(tapGestureRecognizer)
         #endif
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     override open func didMoveToSuperview() {
         super.didMoveToSuperview()
         
@@ -274,7 +274,7 @@ open class EmptyDataSetView: PlatformView {
         setupDetailsLabel(with: nil)
         setupImageView(with: nil)
         
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         removeAdditionalButtons()
         
         let buttonStates: [UIControl.State] = [.highlighted, .normal]
@@ -289,7 +289,7 @@ open class EmptyDataSetView: PlatformView {
         currentlyDisplayedState = nil
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     open override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -364,7 +364,7 @@ open class EmptyDataSetView: PlatformView {
         didTapDataButtonHandle?()
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @objc private func didTapContentViewHandler(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         delegate?.emptyDataSet(self, didTapView: view)
@@ -376,7 +376,7 @@ open class EmptyDataSetView: PlatformView {
     public func reload(with itemsCount: Int = 0) {
 //        os_log(.debug, log: .emptyDataSet, "Need reload with items: \(itemsCount)")
         needsReloadWithItemsCount = itemsCount
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         setNeedsLayout()
         #else
         needsLayout = true
@@ -417,7 +417,7 @@ open class EmptyDataSetView: PlatformView {
             
             setup(with: state)
             
-            #if os(iOS)
+            #if os(iOS) || os(visionOS)
             if let image = dataSource?.buttonImage(self, for: .normal) {
                 buttonImage(image, for: .normal)
                 buttonImage(dataSource?.buttonImage(self, for: .highlighted), for: .highlighted)
@@ -429,7 +429,7 @@ open class EmptyDataSetView: PlatformView {
         
         isHidden = false
         
-        #if os(iOS)
+        #if os(iOS) || os(visionOS)
         // Configure the empty dataset view
         clipsToBounds = true
 
@@ -462,7 +462,7 @@ open class EmptyDataSetView: PlatformView {
         setupTitleLabel(with: attributedTitle)
         setupDetailsLabel(with: attributedDetails)
         setupImageView(with: state?.image)
-        #if os(iOS)
+        #if os(iOS) || os(visionOS)
         setupButtonTitle(with: state?.buttonTitle, for: .normal)
         setupAdditionalButtons(with: state?.additionalButtons)
         #endif
@@ -485,7 +485,7 @@ open class EmptyDataSetView: PlatformView {
         imageView.isHidden = !canShowImage
     }
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     func setupButtonTitle(with buttonTitle: String?, for state: UIControl.State) {
         button.setTitle(buttonTitle, for: state)
         button.isHidden = !canShowButton
@@ -524,7 +524,7 @@ open class EmptyDataSetView: PlatformView {
         state.attributedTitle = dataSource.title(self)
         state.attributedDetails = dataSource.description(self)
         state.image = dataSource.image(self)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         state.buttonTitle = dataSource.buttonTitle(self, for: .normal)?.string
         #endif
         return state
@@ -549,7 +549,7 @@ open class EmptyDataSetView: PlatformView {
         prepareForReuse()
         currentlyDisplayedState = nil
         isHidden = true
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         if let scrollView = superview as? UIScrollView {
             scrollView.isScrollEnabled = true
         }

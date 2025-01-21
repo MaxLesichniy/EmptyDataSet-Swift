@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The object that acts as the data source of the empty datasets.
 /// @discussion The data source must adopt the DZNEmptyDataSetSource protocol. The data source is not retained. All data source methods are optional.
@@ -46,7 +49,7 @@ public protocol EmptyDataSetSource: AnyObject {
     /// - Returns: image animation
     func imageAnimation(_ emptyDataSetView: EmptyDataSetView) -> CAAnimation?
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     /// Asks the data source for the title to be used for the specified button state.
     /// The dataset uses a fixed font style by default, if no attributes are set. If you want a different font style, return a attributed string.
     ///
@@ -129,7 +132,7 @@ public extension EmptyDataSetSource {
         return nil
     }
  
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     func buttonTitle(_ emptyDataSetView: EmptyDataSetView, for state: UIControl.State) -> NSAttributedString? {
         return nil
     }

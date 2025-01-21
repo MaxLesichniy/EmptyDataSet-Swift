@@ -7,7 +7,9 @@
 //
 
 import Foundation
-
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The object that acts as the delegate of the empty datasets.
 /// @discussion The delegate can adopt the DZNEmptyDataSetDelegate protocol. The delegate is not retained. All delegate methods are optional.

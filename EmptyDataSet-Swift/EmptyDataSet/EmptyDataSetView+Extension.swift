@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 extension EmptyDataSetView {
 
@@ -55,7 +58,7 @@ extension EmptyDataSetView {
     /// Asks the data source for a tint color of the image dataset. Default is nil.
     @discardableResult
     public func imageTintColor(_ imageTintColor: PlatformColor?) -> Self {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         imageView.tintColor = imageTintColor
         let renderingMode: UIImage.RenderingMode = imageTintColor != nil ? .alwaysTemplate : .alwaysOriginal
         return image(imageView.image?.withRenderingMode(renderingMode))
@@ -67,7 +70,7 @@ extension EmptyDataSetView {
     /// Asks the data source for the image animation of the dataset.
     @discardableResult
     public func imageAnimation(_ imageAnimation: CAAnimation?) -> Self {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         imageAnimation.map {
             imageView.layer.add($0, forKey: nil)
         }
@@ -75,7 +78,7 @@ extension EmptyDataSetView {
         return self
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     /// Asks the data source for the title to be used for the specified button state.
     /// The dataset uses a fixed font style by default, if no attributes are set. If you want a different font style, return a attributed string.
     @discardableResult
@@ -106,7 +109,7 @@ extension EmptyDataSetView {
     /// Asks the data source for the background color of the dataset. Default is clear color.
     @discardableResult
     public func dataSetBackgroundColor(_ backgroundColor: PlatformColor?) -> Self {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         self.backgroundColor = backgroundColor
         #else
         self.layer?.backgroundColor = backgroundColor?.cgColor
@@ -158,7 +161,7 @@ extension EmptyDataSetView {
     /// Asks the delegate to know if the empty dataset should be rendered and displayed. Default is true.
     @discardableResult
     public func shouldDisplay(_ bool: Bool) -> Self {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         if let superview = self.superview as? UIScrollView {
             isHidden = !(bool && superview.itemsCount == 0)
         } else {
@@ -168,7 +171,7 @@ extension EmptyDataSetView {
         return self
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     /// Asks the delegate for touch permission. Default is true.
     @discardableResult
     public func isTouchAllowed(_ bool: Bool) -> Self {
@@ -190,7 +193,7 @@ extension EmptyDataSetView {
     /// Make sure to return a valid CAAnimation object from imageAnimationForEmptyDataSet:
     @discardableResult
     public func isImageViewAnimateAllowed(_ bool: Bool) -> Self {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         if !bool {
             imageView.layer.removeAllAnimations()
         }
@@ -198,7 +201,7 @@ extension EmptyDataSetView {
         return self
     }
     
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     /// Tells the delegate that the empty dataset view was tapped.
     /// Use this method either to resignFirstResponder of a textfield or searchBar.
     @discardableResult
